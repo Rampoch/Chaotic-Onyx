@@ -152,12 +152,13 @@ Works together with spawning an observer, noted above.
 /*
 This is the proc mobs get to turn into a ghost. Forked from ghostize due to compatibility issues.
 */
-/mob/living/verb/ghost()
+/mob/living/proc/ghost()
 	set category = "OOC"
 	set name = "Ghost"
 	set desc = "Leave your body and enter the land of the dead."
+	set hidden = 0
 
-	if(stat == DEAD)
+	if(stat == DEAD ||istype(loc, /obj/machinery/cryopod))
 		announce_ghost_joinleave(ghostize(1))
 
 /mob/observer/ghost/can_use_hands()	return 0

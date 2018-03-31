@@ -446,7 +446,7 @@ default behaviour is:
 	if(stat == DEAD)
 		switch_from_dead_to_living_mob_list()
 		timeofdeath = 0
-		verbs -= /mob/living/verb/ghost
+		verbs -= /mob/living/proc/ghost
 
 	// restore us to conciousness
 	set_stat(CONSCIOUS)

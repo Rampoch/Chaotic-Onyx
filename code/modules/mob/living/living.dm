@@ -4,7 +4,7 @@
 		add_to_dead_mob_list()
 	else
 		add_to_living_mob_list()
-		verbs -= /mob/living/verb/ghost
+		verbs -= /mob/living/proc/ghost
 
 //mob verbs are faster than object verbs. See mob/verb/examine.
 /mob/living/verb/pulled(atom/movable/AM as mob|obj in oview(1))

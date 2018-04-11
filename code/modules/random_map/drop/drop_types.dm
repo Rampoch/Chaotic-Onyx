@@ -99,4 +99,3 @@ var/global/list/datum/supply_drop_loot/supply_drop
 		/obj/item/weapon/storage/box/syringes,
 		/obj/item/weapon/storage/box/autoinjectors)
 
-	return list(pick(contents))

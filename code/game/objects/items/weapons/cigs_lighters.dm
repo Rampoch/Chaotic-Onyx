@@ -228,7 +228,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if(lit)
 		overlays += overlay_image(icon, "cigember", flags=RESET_COLOR)
 
-
 /obj/item/clothing/mask/smokable/cigarette/trident/update_icon()
 	..()
 	overlays.Cut()

@@ -178,6 +178,9 @@
 	maxcharge = 500
 	matter = list(DEFAULT_WALL_MATERIAL = 700, "glass" = 50)
 
+/obj/item/weapon/cell/apc/empty
+	charge = 0
+
 
 /obj/item/weapon/cell/high
 	name = "advanced power cell"

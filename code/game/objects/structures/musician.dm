@@ -403,7 +403,7 @@
 					lines.Cut(301)
 				var/linenum = 1
 				for(var/l in lines)
-					if(lentext(l) > 3000)
+					if(lentext(l) > 300)
 						to_chat(usr, "Line [linenum] too long!")
 						lines.Remove(l)
 					else

@@ -107,6 +107,20 @@ var/list/floor_decals = list()
 	icon_state = "corner_white"
 	alpha = 229
 
+/obj/effect/floor_decal/rhombus
+	icon_state = "rhombus"
+
+/obj/effect/floor_decal/rhombus/beige
+	name = "beige rhombus"
+	color = COLOR_BEIGE
+
+/obj/effect/floor_decal/mini_rhombus
+	icon_state = "mini_rhombus"
+
+/obj/effect/floor_decal/mini_rhombus/beige
+	name = "beige rhombus"
+	color = COLOR_BEIGE
+
 /obj/effect/floor_decal/corner/black
 	name = "black corner"
 	color = "#333333"

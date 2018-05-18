@@ -49,7 +49,6 @@
 		acceptable_items |= /obj/item/weapon/reagent_containers/food/snacks/grown
 
 
-
 /*******************
 *   Item Adding
 ********************/

@@ -55,26 +55,6 @@
 	icon_opened = "securemedopen"
 	icon_off = "securemedoff"
 
-/obj/structure/closet/secure_closet/medical4
-	name = "blood packs closet"
-	desc = "Filled with blood packs."
-	icon_state = "medical1"
-	icon_closed = "medical"
-	icon_locked = "medical1"
-	icon_opened = "medicalopen"
-	icon_off = "medicaloff"
-	req_access = list(access_medical_equip)
-
-/obj/structure/closet/secure_closet/medical4/WillContain()
-	return list(
-		/obj/item/weapon/reagent_containers/ivbag/blood/APlus = 2,
-		/obj/item/weapon/reagent_containers/ivbag/blood/AMinus = 2,
-		/obj/item/weapon/reagent_containers/ivbag/blood/BPlus = 2,
-		/obj/item/weapon/reagent_containers/ivbag/blood/BMinus = 2,
-		/obj/item/weapon/reagent_containers/ivbag/blood/OPlus = 2,
-		/obj/item/weapon/reagent_containers/ivbag/blood/OMinus = 2
-	)
-
 /obj/structure/closet/secure_closet/medical3/WillContain()
 	return list(
 		new/datum/atom_creator/weighted(list(/obj/item/weapon/storage/backpack/medic, /obj/item/weapon/storage/backpack/satchel_med)),

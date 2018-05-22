@@ -911,6 +911,15 @@
 	icon_state = "bar"
 	sound_env = LARGE_SOFTFLOOR
 
+/area/crew_quarters/barbackroom
+	name = "\improper Bar Backroom"
+	icon_state = "barBR"
+
+/area/crew_quarters/mess
+	name = "\improper Mess Hall"
+	icon_state = "cafeteria"
+	sound_env = LARGE_SOFTFLOOR
+
 /area/library
  	name = "\improper Library"
  	icon_state = "library"

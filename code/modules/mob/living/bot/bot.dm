@@ -1,7 +1,7 @@
 /mob/living/bot
 	name = "Bot"
-	health = 20
-	maxHealth = 20
+	health = 30
+	maxHealth = 30
 	icon = 'icons/obj/aibots.dmi'
 	universal_speak = 1
 	density = 0
@@ -81,19 +81,13 @@
 	setOxyLoss(0)
 	setToxLoss(0)
 
-/mob/living/bot/take_organ_damage(var/brute, var/burn, var/emp=0)
-	if(status_flags & GODMODE)	return 0	//godmode
-	adjustBruteLoss(brute)
-	adjustFireLoss(burn)
-	src.updatehealth()
-	world << "damage taken brute:[brute] burn:[burn] by [src]"
+/mob/living/bot/adjustBruteLoss(var/amount)
+	if(amount > 0)
+		health -= amount
 
-/mob/living/bot/take_overall_damage(var/brute, var/burn, var/used_weapon = null)
-	if(status_flags & GODMODE)	return 0	//godmode
-	adjustBruteLoss(brute)
-	adjustFireLoss(burn)
-	src.updatehealth()
-	world << "damage taken brute:[brute] burn:[burn] by [src]"
+/mob/living/bot/adjustFireLoss(var/amount)
+	if(amount > 0)
+		health -= amount
 
 /mob/living/bot/death()
 	explode()

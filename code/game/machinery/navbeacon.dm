@@ -175,8 +175,8 @@ Transponder Codes:<UL>"}
 	location = "Robotics"
 	codes = list("patrol" = 1, "next_patrol" = "CH_EAST2")
 
-/obj/machinery/navbeacon/Security
-	location = "Security"
+/obj/machinery/navbeacon/Sec
+	location = "Sec"
 	codes = list("patrol" = 1, "next_patrol" = "CH_NORTH1")
 
 /obj/machinery/navbeacon/CH_NORTH1
@@ -229,7 +229,7 @@ Transponder Codes:<UL>"}
 
 /obj/machinery/navbeacon/CH_NORTH2
 	location = "CH_NORTH2"
-	codes = list("patrol" = 1, "next_patrol" = "Security") // And the cycle is finished
+	codes = list("patrol" = 1, "next_patrol" = "Sec") // And the cycle is finished
 
 // Delivery types below.
 

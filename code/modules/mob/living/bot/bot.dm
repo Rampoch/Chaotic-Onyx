@@ -1,7 +1,7 @@
 /mob/living/bot
 	name = "Bot"
-	health = 30
-	maxHealth = 30
+	health = 20
+	maxHealth = 20
 	icon = 'icons/obj/aibots.dmi'
 	universal_speak = 1
 	density = 0

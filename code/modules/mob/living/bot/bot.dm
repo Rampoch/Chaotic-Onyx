@@ -48,6 +48,8 @@
 	access_scanner.req_access = req_access.Copy()
 	access_scanner.req_one_access = req_one_access.Copy()
 
+	src.status_flags=8
+
 /mob/living/bot/Initialize()
 	. = ..()
 	if(on)
@@ -60,6 +62,8 @@
 	if(health <= 0)
 		death()
 		return
+	else
+		updatehealth()
 	weakened = 0
 	stunned = 0
 	paralysis = 0
@@ -76,6 +80,20 @@
 		health = maxHealth - getFireLoss() - getBruteLoss()
 	setOxyLoss(0)
 	setToxLoss(0)
+
+/mob/living/bot/take_organ_damage(var/brute, var/burn, var/emp=0)
+	if(status_flags & GODMODE)	return 0	//godmode
+	adjustBruteLoss(brute)
+	adjustFireLoss(burn)
+	src.updatehealth()
+	world << "damage taken brute:[brute] burn:[burn] by [src]"
+
+/mob/living/bot/take_overall_damage(var/brute, var/burn, var/used_weapon = null)
+	if(status_flags & GODMODE)	return 0	//godmode
+	adjustBruteLoss(brute)
+	adjustFireLoss(burn)
+	src.updatehealth()
+	world << "damage taken brute:[brute] burn:[burn] by [src]"
 
 /mob/living/bot/death()
 	explode()

@@ -48,8 +48,6 @@
 	access_scanner.req_access = req_access.Copy()
 	access_scanner.req_one_access = req_one_access.Copy()
 
-	src.status_flags=8
-
 /mob/living/bot/Initialize()
 	. = ..()
 	if(on)
@@ -62,8 +60,6 @@
 	if(health <= 0)
 		death()
 		return
-	else
-		updatehealth()
 	weakened = 0
 	stunned = 0
 	paralysis = 0

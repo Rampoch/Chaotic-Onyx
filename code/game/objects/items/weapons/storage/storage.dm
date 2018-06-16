@@ -219,7 +219,8 @@
 	if(W.maptext)
 		W.maptext = ""
 	W.on_exit_storage(src)
-	update_icon()
+	if(!NoUpdate)
+		update_icon()
 	return 1
 
 //This proc is called when you want to place an item into the storage item.
@@ -258,6 +259,11 @@
 					to_chat(user, "<span class='warning'>God damnit!</span>")
 	W.add_fingerprint(user)
 	return handle_item_insertion(W)
+
+
+/obj/item/weapon/storage/proc/finish_bulk_removal()
+	update_ui_after_item_removal()
+	update_icon()
 
 /obj/item/weapon/storage/attack_hand(mob/user as mob)
 	if(ishuman(user))
@@ -320,7 +326,7 @@
 	hide_from(usr)
 	for(var/obj/item/I in contents)
 		remove_from_storage(I, T, 1)
-	update_ui_after_item_removal()
+	finish_bulk_removal()
 
 /obj/item/weapon/storage/Initialize()
 	. = ..()

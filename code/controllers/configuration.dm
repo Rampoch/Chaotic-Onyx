@@ -87,7 +87,8 @@ var/list/gamemode_cache = list()
 	var/uneducated_mice = 0 //Set to 1 to prevent newly-spawned mice from understanding human speech
 
 	var/usealienwhitelist = 0
-	var/usealienwhitelistSQL = 0;
+	var/useingamealienwhitelist = 0
+	var/usealienwhitelistSQL = 0
 	var/limitalienplayers = 0
 	var/alien_to_human_ratio = 0.5
 	var/allow_extra_antags = 0
@@ -574,10 +575,14 @@ var/list/gamemode_cache = list()
 				if("humans_need_surnames")
 					humans_need_surnames = 1
 
-				if("usealienwhitelist")
+				//if("usealienwhitelist")
+				//	usealienwhitelist = 1
+				if("useingamealienwhitelist")
 					usealienwhitelist = 1
-				if("usealienwhitelist_sql") // above need to be enabled as well
-					usealienwhitelistSQL = 1;
+					useingamealienwhitelist = 1
+				//if("usealienwhitelist_sql") // above need to be enabled as well
+				//	usealienwhitelist = 1
+				//	usealienwhitelistSQL = 1;
 				if("alien_player_ratio")
 					limitalienplayers = 1
 					alien_to_human_ratio = text2num(value)

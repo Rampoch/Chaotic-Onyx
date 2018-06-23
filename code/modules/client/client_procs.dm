@@ -148,6 +148,16 @@
 		GLOB.admins += src
 		holder.owner = src
 
+
+	else if(config.panic_bunker && get_player_age(ckey)<0) //first connection
+		message_admins("<span class='adminnotice'>Failed Login: [key] - New account attempting to connect during panic bunker</span>")
+		src << "Sorry but the server is currently not accepting connections from never before seen players."
+		del(src)
+		return 0
+
+	// Load EAMS data
+	EAMS_CollectData()
+
 	//preferences datum - also holds some persistant data for the client (because we may as well keep these datums to a minimum)
 	prefs = preferences_datums[ckey]
 	if(!prefs)
@@ -198,8 +208,9 @@
 	if(!winexists(src, "asset_cache_browser")) // The client is using a custom skin, tell them.
 		to_chat(src, "<span class='warning'>Unable to access asset cache browser, if you are using a custom skin file, please allow DS to download the updated version, if you are not, then make a bug report. This is not a critical issue but can cause issues with resource downloading, as it is impossible to know when extra resources arrived to you.</span>")
 
-	if(holder)
+/*	if(holder)
 		src.control_freak = 0 //Devs need 0 for profiler access
+*/
 	//////////////
 	//DISCONNECT//
 	//////////////

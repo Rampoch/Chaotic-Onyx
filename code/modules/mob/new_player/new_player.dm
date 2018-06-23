@@ -44,24 +44,6 @@
 
 	output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 
-	if(!IsGuestKey(src.key))
-		establish_db_connection()
-		if(dbcon.IsConnected())
-			var/isadmin = 0
-			if(src.client && src.client.holder)
-				isadmin = 1
-			var/DBQuery/query = dbcon.NewQuery("SELECT id FROM erro_poll_question WHERE [(isadmin ? "" : "adminonly = false AND")] Now() BETWEEN starttime AND endtime AND id NOT IN (SELECT pollid FROM erro_poll_vote WHERE ckey = \"[ckey]\") AND id NOT IN (SELECT pollid FROM erro_poll_textreply WHERE ckey = \"[ckey]\")")
-			query.Execute()
-			var/newpoll = 0
-			while(query.NextRow())
-				newpoll = 1
-				break
-
-			if(newpoll)
-				output += "<p><b><a href='byond://?src=\ref[src];showpoll=1'>Show Player Polls</A> (NEW!)</b></p>"
-			else
-				output += "<p><a href='byond://?src=\ref[src];showpoll=1'>Show Player Polls</A></p>"
-
 	output += "</div>"
 
 	panel = new(src, "Welcome","Welcome", 210, 280, src)
@@ -103,6 +85,8 @@
 
 	if(href_list["ready"])
 		if(!ticker || ticker.current_state <= GAME_STATE_PREGAME) // Make sure we don't ready up after the round has started
+			if (!client.EAMS_CheckForAccess())
+				return
 			ready = text2num(href_list["ready"])
 		else
 			ready = 0
@@ -114,6 +98,9 @@
 	if(href_list["observe"])
 		if(!(initialization_stage&INITIALIZATION_COMPLETE))
 			to_chat(src, "<span class='warning'>Please wait for server initialization to complete...</span>")
+			return
+
+		if (!client.EAMS_CheckForAccess())
 			return
 
 		if(!config.respawn_delay || client.holder || alert(src,"Are you sure you wish to observe? You will have to wait [config.respawn_delay] minute\s before being able to respawn!","Player Setup","Yes","No") == "Yes")
@@ -158,6 +145,10 @@
 		if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
 			to_chat(usr, "<span class='warning'>The round is either not ready, or has already finished...</span>")
 			return
+
+		if (!client.EAMS_CheckForAccess())
+			return
+
 		LateChoices() //show the latejoin job selection menu
 
 	if(href_list["manifest"])
@@ -478,7 +469,7 @@
 		mind.original = new_character
 		if(client.prefs.memory)
 			mind.store_memory(client.prefs.memory)
-		if(client.prefs.relations.len)
+		if(client.prefs.relations.len && mind.may_have_relations())
 			for(var/T in client.prefs.relations)
 				var/TT = matchmaker.relation_types[T]
 				var/datum/relation/R = new TT
@@ -527,13 +518,17 @@
 	return check_rights(R_ADMIN, 0, src)
 
 /mob/new_player/proc/check_species_allowed(datum/species/S, var/show_alert=1)
-	if(!(S.spawn_flags & SPECIES_CAN_JOIN) && !has_admin_rights())
-		if(show_alert)
-			to_chat(src, alert("Your current species, [client.prefs.species], is not available for play."))
+	if (!(S.spawn_flags & SPECIES_CAN_JOIN) && !has_admin_rights())
+		if (show_alert)
+			alert(client, "Your current species, [client.prefs.species], is not available for play.")
 		return 0
-	if(!is_alien_whitelisted(src, S))
-		if(show_alert)
-			to_chat(src, alert("You are currently not whitelisted to play [client.prefs.species]."))
+	if (!is_alien_whitelisted(src, S))
+		if (show_alert)
+			alert(client, "You are currently not whitelisted to play [client.prefs.species].")
+		return 0
+	if (jobban_isbanned(src, "SPECIES"))
+		if (show_alert)
+			alert(client, "You are currently banned to play species!")
 		return 0
 	return 1
 

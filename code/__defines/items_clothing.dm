@@ -82,11 +82,13 @@
 // since numbers cannot be used as associative list keys.
 //icon_back, icon_l_hand, etc would be much better names for these...
 #define slot_back_str		"slot_back"
+#define slot_hand_str		"slot_hand"
 #define slot_l_hand_str		"slot_l_hand"
 #define slot_r_hand_str		"slot_r_hand"
 #define slot_w_uniform_str	"slot_w_uniform"
 #define slot_head_str		"slot_head"
 #define slot_wear_suit_str	"slot_suit"
+#define slot_ear_str        "slot_ear"
 #define slot_l_ear_str      "slot_l_ear"
 #define slot_r_ear_str      "slot_r_ear"
 #define slot_belt_str       "slot_belt"
@@ -94,7 +96,7 @@
 #define slot_head_str      	"slot_head"
 #define slot_wear_mask_str 	"slot_wear_mask"
 #define slot_handcuffed_str "slot_handcuffed"
-#define slot_legcuffed_str "slot_legcuffed"
+#define slot_legcuffed_str  "slot_legcuffed"
 #define slot_wear_mask_str 	"slot_wear_mask"
 #define slot_wear_id_str  	"slot_wear_id"
 #define slot_gloves_str  	"slot_gloves"
@@ -192,6 +194,11 @@
 #define VERY_SHORT 0x1
 #define HAIR_TRIPPABLE 0x2
 
+//flags to determine if an eyepiece is a hud.
+#define HUD_SCIENCE 0x1
+#define HUD_SECURITY 0x2
+#define HUD_MEDICAL 0x4
+
 // Storage
 
 /*
@@ -227,25 +234,4 @@ var/list/default_onmob_icons = list(
 		slot_gloves_str = 'icons/mob/onmob/hands.dmi',
 		slot_s_store_str = 'icons/mob/onmob/belt_mirror.dmi',
 		slot_tie_str = 'icons/mob/onmob/ties.dmi'
-		)
-
-var/list/slim_onmob_icons = list(
-		//slot_l_hand_str = 'icons/mob/onmob/items/lefthand_slim.dmi',
-		//slot_r_hand_str = 'icons/mob/onmob/items/righthand_slim.dmi',
-		//slot_belt_str = 'icons/mob/onmob/belt_slim.dmi',
-	//	slot_back_str = 'icons/mob/onmob/back_slim.dmi',
-		//slot_l_ear_str = 'icons/mob/onmob/ears.dmi',
-		//slot_r_ear_str = 'icons/mob/onmob/ears.dmi',
-		//slot_glasses_str = 'icons/mob/onmob/eyes_slim.dmi',
-		//slot_wear_id_str = 'icons/mob/onmob/id_slim.dmi',
-		slot_w_uniform_str = 'icons/mob/onmob/uniform_slim.dmi'
-		//slot_wear_suit_str = 'icons/mob/onmob/suit_slim.dmi',
-		//slot_head_str = 'icons/mob/onmob/head_slim.dmi',
-		//slot_shoes_str = 'icons/mob/onmob/feet_slim.dmi',
-		//slot_wear_mask_str = 'icons/mob/onmob/mask_slim.dmi',
-		//slot_handcuffed_str = 'icons/mob/onmob/misc_slim.dmi',
-		//slot_legcuffed_str = 'icons/mob/onmob/misc_slim.dmi',
-		//slot_gloves_str = 'icons/mob/onmob/hands_slim.dmi',
-		//slot_s_store_str = 'icons/mob/onmob/belt_mirror_slim.dmi',
-		//slot_tie_str = 'icons/mob/onmob/ties_slim.dmi'
 		)

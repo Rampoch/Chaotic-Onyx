@@ -13,6 +13,17 @@
 /proc/error(msg)
 	to_world_log("## ERROR: [msg][log_end]")
 
+/proc/log_ss(subsystem, text, log_world = TRUE)
+	if (!subsystem)
+		subsystem = "UNKNOWN"
+	var/msg = "[subsystem]: [text]"
+	game_log("SS", msg)
+	if (log_world)
+		to_world_log("SS[subsystem]: [text]")
+
+/proc/log_ss_init(text)
+	game_log("SS", "[text]")
+
 #define WARNING(MSG) warning("[MSG] in [__FILE__] at line [__LINE__] src: [src] usr: [usr].")
 //print a warning message to world.log
 /proc/warning(msg)
@@ -23,7 +34,7 @@
 	to_world_log("## TESTING: [msg][log_end]")
 
 /proc/game_log(category, text)
-	diary << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
+	diary << "\[[time_stamp()]\] [game_id] [category]: [text][log_end]"
 
 /proc/log_admin(text)
 	GLOB.admin_log.Add(text)

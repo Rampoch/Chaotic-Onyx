@@ -60,23 +60,13 @@
 	var/list/item_state_slots = list(slot_wear_id_str = "id") //overrides the default item_state for particular slots.
 
 	// Used to specify the icon file to be used when the item is worn. If not set the default icon for that slot will be used.
-	// If icon_override or sprite_sheets are set they will take precendence over this, assuming they apply to the slot in question.
+	// If icon_override is set it will take precendence over this, assuming they apply to the slot in question.
 	// Only slot_l_hand/slot_r_hand are implemented at the moment. Others to be implemented as needed.
 	var/list/item_icons
 
-	//** These specify item/icon overrides for _species_
+	var/tmp/sprite_group = null
 
-	/* Species-specific sprites, concept stolen from Paradise//vg/.
-	ex:
-	sprite_sheets = list(
-		SPECIES_TAJARA = 'icons/cat/are/bad'
-		)
-	If index term exists and icon_override is not set, this sprite sheet will be used.
-	*/
-	var/list/sprite_sheets = list()
-
-	// Species-specific sprite sheets for inventory sprites
-	// Works similarly to worn sprite_sheets, except the alternate sprites are used when the clothing/refit_for_species() proc is called.
+	// Species-specific sprite sheets for inventory sprites. Used in clothing/refit_for_species() proc.
 	var/list/sprite_sheets_obj = list()
 
 /obj/item/New()
@@ -169,7 +159,29 @@
 			size = "bulky"
 		if(ITEM_SIZE_HUGE + 1 to INFINITY)
 			size = "huge"
-	return ..(user, distance, "", "It is a [size] item.")
+	var/desc_comp = "" //For "description composite"
+	desc_comp += "It is a [size] item."
+
+	if(hasHUD(user, HUD_SCIENCE)) //Mob has a research scanner active.
+		desc_comp += "<BR>*--------* <BR>"
+
+		if(origin_tech)
+			desc_comp += "<span class='notice'>Testing potentials:</span><BR>"
+			//var/list/techlvls = params2list(origin_tech)
+			for(var/T in origin_tech)
+				desc_comp += "Tech: Level [origin_tech[T]] [CallTechName(T)] <BR>"
+		else
+			desc_comp += "No tech origins detected.<BR>"
+
+		if(LAZYLEN(matter))
+			desc_comp += "<span class='notice'>Extractable materials:</span><BR>"
+			for(var/mat in matter)
+				desc_comp += "[get_material_by_name(mat)]<BR>"
+		else
+			desc_comp += "<span class='danger'>No extractable materials detected.</span><BR>"
+		desc_comp += "*--------*"
+
+	return ..(user, distance, "", desc_comp)
 
 /obj/item/attack_hand(mob/user as mob)
 	if (!user) return
@@ -342,8 +354,10 @@ var/list/global/slot_flags_enumeration = list(
 				return 0
 			if( (slot_flags & SLOT_TWOEARS) && H.get_equipped_item(slot_other_ear) )
 				return 0
-		if(slot_wear_id, slot_belt)
-			if(!H.w_uniform && (slot_w_uniform in mob_equip))
+		if(slot_belt, slot_wear_id)
+			if(slot == slot_belt && (item_flags & ITEM_FLAG_IS_BELT))
+				return 1
+			else if(!H.w_uniform && (slot_w_uniform in mob_equip))
 				if(!disable_warning)
 					to_chat(H, "<span class='warning'>You need a jumpsuit before you can attach this [name].</span>")
 				return 0
@@ -656,26 +670,23 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 /obj/item/proc/pwr_drain()
 	return 0 // Process Kill
 
-/obj/item/proc/use_spritesheet(var/bodytype, var/slot, var/icon_state)
-	if(!sprite_sheets || !sprite_sheets[bodytype])
-		return 0
-	if(slot == slot_r_hand_str || slot == slot_l_hand_str)
-		return 0
+/obj/item/proc/get_icon_state(slot)
+	if (item_state_slots)
+		if (item_state_slots[slot])
+			return item_state_slots[slot]
 
-	if(icon_state in icon_states(sprite_sheets[bodytype]))
-		return 1
+		switch (slot)
+			if (slot_l_hand_str, slot_r_hand_str)
+				if (item_state_slots[slot_hand_str])
+					return item_state_slots[slot_hand_str]
+			if (slot_l_ear_str, slot_r_ear_str)
+				if (item_state_slots[slot_ear_str])
+					return item_state_slots[slot_ear_str]
 
-	return (slot != slot_wear_suit_str && slot != slot_head_str)
+	if (item_state)
+		return item_state
 
-/obj/item/proc/get_icon_state(mob/user_mob, slot)
-	var/mob_state
-	if(item_state_slots && item_state_slots[slot])
-		mob_state = item_state_slots[slot]
-	else if (item_state)
-		mob_state = item_state
-	else
-		mob_state = icon_state
-	return mob_state
+	return icon_state
 
 /obj/item/proc/dir_shift(var/icon/given_icon, var/dir_given, var/x = 0, var/y = 0)
 	var/icon/I = new(given_icon, dir = dir_given)
@@ -685,41 +696,31 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	return given_icon
 
 /obj/item/proc/get_mob_overlay(mob/user_mob, slot)
-	var/bodytype = "Default"
 	var/mob/living/carbon/human/user_human
 	if(ishuman(user_mob))
 		user_human = user_mob
-		bodytype = user_human.species.get_bodytype(user_human)
 
-	var/mob_state = get_icon_state(user_mob, slot)
+	var/mob_state = get_icon_state(slot)
 
 	var/mob_icon
-	var/spritesheet = FALSE
+	
 	if(icon_override)
 		mob_icon = icon_override
 		if(slot == 	slot_l_hand_str || slot == slot_l_ear_str)
 			mob_state = "[mob_state]_l"
 		if(slot == 	slot_r_hand_str || slot == slot_r_ear_str)
 			mob_state = "[mob_state]_r"
-	else if(use_spritesheet(bodytype, slot, mob_state))
-		if(slot == slot_l_ear)
-			mob_state = "[mob_state]_l"
-		if(slot == slot_r_ear)
-			mob_state = "[mob_state]_r"
-		spritesheet = TRUE
-		mob_icon = sprite_sheets[bodytype]
-	else if(item_icons && item_icons[slot])
-		mob_icon = item_icons[slot]
-	else
-		mob_icon = default_onmob_icons[slot]
-	if(user_human.gender == FEMALE && user_human.species == SPECIES_HUMAN)
-		mob_icon = slim_onmob_icons[slot]
+	else 
+		if(item_icons && item_icons[slot])
+			mob_icon = item_icons[slot]
+		else if (user_human && user_human.body_build)
+			mob_icon = user_human.body_build.get_mob_icon(slot, mob_state)
 
 	var/image/ret_overlay = overlay_image(mob_icon,mob_state,color,RESET_COLOR)
-	if(user_human && user_human.species && user_human.species.equip_adjust.len && !spritesheet)
+	if(user_human && user_human.species && user_human.species.equip_adjust.len)
 		var/list/equip_adjusts = user_human.species.equip_adjust
 		if(equip_adjusts[slot])
-			var/image_key = "[user_human.species] [mob_icon] [mob_state] [color]"
+			var/image_key = "[user_human.species] [user_human.body_build.name] [mob_icon] [mob_state] [color]"
 			ret_overlay = user_human.species.equip_overlays[image_key]
 			if(!ret_overlay)
 				var/icon/final_I = new(mob_icon, icon_state = mob_state)

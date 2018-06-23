@@ -1,4 +1,4 @@
-GLOBAL_DATUM_INIT(using_map, /datum/map, new USING_MAP_DATUM)
+GLOBAL_DATUM_INIT(using_map, /datum/map, text2path(copytext(file2text("data/use_map"),1,-1)) || USING_MAP_DATUM; using_map = new using_map)
 GLOBAL_LIST_EMPTY(all_maps)
 
 var/const/MAP_HAS_BRANCH = 1	//Branch system for occupations, togglable
@@ -15,7 +15,7 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 		if(!M.path)
 			log_error("Map '[M]' does not have a defined path, not adding to map list!")
 		else
-			GLOB.all_maps[M.path] = M
+			GLOB.all_maps[M.name] = M
 	return 1
 
 
@@ -33,6 +33,8 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 
 	var/list/map_levels              // Z-levels available to various consoles, such as the crew monitor. Defaults to station_levels if unset.
 
+	var/list/dynamic_z_levels        // Z-levels to load in runtime
+
 	var/list/base_turf_by_z = list() // Custom base turf by Z-level. Defaults to world.turf for unlisted Z-levels
 	var/list/usable_email_tlds = list("freemail.nt")
 	var/base_floor_type = /turf/simulated/floor/airless // The turf type used when generating floors between Z-levels at startup.
@@ -41,7 +43,7 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 	//This list contains the z-level numbers which can be accessed via space travel and the percentile chances to get there.
 	var/list/accessible_z_levels = list()
 
-	var/list/allowed_jobs	       //Job datums to use.
+	var/list/allowed_jobs          //Job datums to use.
 	                               //Works a lot better so if we get to a point where three-ish maps are used
 	                               //We don't have to C&P ones that are only common between two of them
 	                               //That doesn't mean we have to include them with the rest of the jobs though, especially for map specific ones.
@@ -108,49 +110,48 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 	var/station_departments = list()//Gets filled automatically depending on jobs allowed
 
 	//Factions prefs stuff
-	var/list/citizenship_choices = list(
-		"Earth",
-		"Mars",
-		"Terra",
-		"Gaia",
-		"Moghes",
-		"Ahdomai",
-		"Qerrbalak"
-	)
-
-	var/list/home_system_choices = list(
-		"Sol",
-		"Nyx",
-		"Tau Ceti",
-		"Epsilon Ursae Minoris",
-		"Zamsiin-lr",
-		"Gilgamesh"
+	var/list/faction_choices = list(
+		"NanoTrasen", // NanoTrasen must be first, else Company Provocation event will break
+		"Liu-Je Green Terraforming Industries",
+		"Charcoal TestLabs Ltd.",
+		"Blue Oceanic Explorers",
+		"Milky Way Trade Union",
+		"Redknight & Company Dominance Tech",
+		"Indigo Special Research Collaboration"
 		)
 
-	var/list/faction_choices = list(
-		"Sol Central Government",
-		"Terran Colonial Confederation",
-		"Vey Med",
-		"Einstein Engines",
-		"Free Trade Union",
+	var/list/citizenship_choices = list(
 		"NanoTrasen",
-		"Ward-Takahashi GMB",
-		"Gilthari Exports",
-		"Grayson Manufactories Ltd.",
-		"Aether Atmospherics",
-		"Zeng-Hu Pharmaceuticals",
-		"Hephaestus Industries",
-		"Commonwealth of Ahdomai"
+		"Nova Magnitka Government",
+		"Gaia Magna",
+		"Moghes",
+		"Ahdomai",
+		"Qerrbalak",
+		"Parish of the Parthenonnus Ark"
+		)
+
+	var/list/home_system_choices = list(
+		"Nova Magnitka",
+		"Tau Ceti",
+		"Epsilon Ursae Minoris",
+		"Zermig VIII",
+		"Arcturia",
+		"Gaia Magna",
+		"Parthenonnus Ark Space Vessel"
 		)
 
 	var/list/religion_choices = list(
-		"Unitarianism",
-		"Hinduism",
-		"Buddhist",
-		"Islamic",
-		"Christian",
-		"Agnostic",
-		"Deist"
+		"Pan-Christian United Church",
+		"Mahadeva Marga",
+		"Buddhism",
+		"Allah Chosen Devotees",
+		"A-Kami",
+		"Geng Hao Dao",
+		"Jesus Witnesses",
+		"Syncretism",
+		"Neohumanism",
+		"Agnosticism",
+		"Atheism"
 		)
 
 /datum/map/New()
@@ -162,12 +163,19 @@ var/const/MAP_HAS_RANK = 2		//Rank system, also togglable
 		planet_size = list(world.maxx, world.maxy)
 
 /datum/map/proc/setup_map()
+	if(dynamic_z_levels)
+		for(var/level in dynamic_z_levels)
+			maploader.load_map(dynamic_z_levels[level], 1, 1, text2num(level), FALSE, FALSE, TRUE, FALSE)
 	var/list/lobby_music_tracks = subtypesof(/lobby_music)
 	var/lobby_music_type = /lobby_music
 	if(lobby_music_tracks.len)
 		lobby_music_type = pick(lobby_music_tracks)
 	lobby_music = new lobby_music_type()
 	world.update_status()
+	var/list/antags = all_antag_types()
+	for(var/id in antags)
+		var/datum/antagonist/A = antags[id]
+		A.get_starting_locations()
 
 /datum/map/proc/send_welcome()
 	return

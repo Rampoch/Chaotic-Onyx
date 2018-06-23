@@ -25,7 +25,6 @@ var/datum/antagonist/raider/raiders
 		/obj/item/clothing/under/soviet,
 		/obj/item/clothing/under/pirate,
 		/obj/item/clothing/under/redcoat,
-		/obj/item/clothing/under/serviceoveralls,
 		/obj/item/clothing/under/captain_fly,
 		/obj/item/clothing/under/det,
 		/obj/item/clothing/under/color/brown,
@@ -201,7 +200,7 @@ var/datum/antagonist/raider/raiders
 	if(!..())
 		return 0
 
-	if(player.species && player.species.get_bodytype(player) == SPECIES_VOX)
+	if(player.species && player.species.name == SPECIES_VOX)
 		equip_vox(player)
 	else
 		var/new_shoes =   pick(raider_shoes)

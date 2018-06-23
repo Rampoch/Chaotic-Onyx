@@ -21,6 +21,7 @@ GLOBAL_VAR_CONST(PREF_CTRL_CLICK, "ctrl click")
 GLOBAL_VAR_CONST(PREF_CTRL_SHIFT_CLICK, "ctrl shift click")
 GLOBAL_VAR_CONST(PREF_HEAR, "Hear")
 GLOBAL_VAR_CONST(PREF_SILENT, "Silent")
+GLOBAL_VAR_CONST(PREF_SHORTHAND, "Shorthand")
 
 var/list/_client_preferences
 var/list/_client_preferences_by_key
@@ -118,6 +119,11 @@ var/list/_client_preferences_by_type
 	key = "CHAT_GHOSTRADIO"
 	options = list(GLOB.PREF_ALL_CHATTER, GLOB.PREF_NEARBY)
 
+/datum/client_preference/language_display
+	description = "Display Language Names"
+	key = "LANGUAGE_DISPLAY"
+	options = list(GLOB.PREF_FULL, GLOB.PREF_SHORTHAND, GLOB.PREF_OFF)
+
 /datum/client_preference/ghost_follow_link_length
 	description ="Ghost Follow Links"
 	key = "CHAT_GHOSTFOLLOWLINKLENGTH"
@@ -140,6 +146,11 @@ var/list/_client_preferences_by_type
 /datum/client_preference/show_ooc
 	description ="OOC chat"
 	key = "CHAT_OOC"
+	options = list(GLOB.PREF_SHOW, GLOB.PREF_HIDE)
+
+/datum/client_preference/show_discord_ooc
+	description ="Discord OOC chat"
+	key = "CHAT_DISCORD_OOC"
 	options = list(GLOB.PREF_SHOW, GLOB.PREF_HIDE)
 
 /datum/client_preference/show_aooc
@@ -177,10 +188,6 @@ var/list/_client_preferences_by_type
 	key = "BROWSER_STYLED"
 	options = list(GLOB.PREF_FANCY, GLOB.PREF_PLAIN)
 
-/datum/client_preference/autohiss
-	description = "Autohiss"
-	key = "AUTOHISS"
-	options = list(GLOB.PREF_OFF, GLOB.PREF_BASIC, GLOB.PREF_FULL)
 
 /datum/client_preference/hardsuit_activation
 	description = "Hardsuit Module Activation Key"

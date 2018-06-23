@@ -21,6 +21,9 @@
 
 	var/staffwarn = null
 
+	var/datum/eams_info/eams_info = new
+	var/species_ingame_whitelisted = FALSE
+
 		///////////////
 		//SOUND STUFF//
 		///////////////

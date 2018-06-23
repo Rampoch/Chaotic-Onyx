@@ -112,7 +112,7 @@
 		return 1
 
 	// only carbons can eat
-	if(istype(target, /mob/living/carbon))
+	if(istype(target, /mob/living/carbon) && user.a_intent != I_HURT)
 		if(target == user)
 			if(istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/H = user
@@ -192,3 +192,8 @@
 			set_APTFT()
 	else
 		return ..()
+
+/obj/item/weapon/reagent_containers/examine(mob/user)
+	. = ..()
+	if(hasHUD(user, HUD_SCIENCE))
+		to_chat(user, "<span class='notice'>The [src] contains: [reagents.get_reagents()].</span>")

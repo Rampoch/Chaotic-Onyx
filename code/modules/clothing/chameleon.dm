@@ -19,9 +19,6 @@
 		item_icons = copy.item_icons.Copy()
 	if(copy.item_state_slots)
 		item_state_slots = copy.item_state_slots.Copy()
-	if(copy.sprite_sheets)
-		sprite_sheets = copy.sprite_sheets.Copy()
-	//copying sprite_sheets_obj should be unnecessary as chameleon items are not refittable.
 
 	return copy //for inheritance
 
@@ -52,7 +49,7 @@
 /obj/item/clothing/under/chameleon/New()
 	..()
 	if(!clothing_choices)
-		var/blocked = list(src.type, /obj/item/clothing/under/cloud, /obj/item/clothing/under/gimmick)//Prevent infinite loops and bad jumpsuits.
+		var/blocked = list(src.type, /obj/item/clothing/under/gimmick)//Prevent infinite loops and bad jumpsuits.
 		clothing_choices = generate_chameleon_choices(/obj/item/clothing/under, blocked)
 
 /obj/item/clothing/under/chameleon/emp_act(severity)
@@ -267,7 +264,7 @@
 /obj/item/clothing/mask/chameleon
 	name = "gas mask"
 	icon_state = "fullgas"
-	item_state = "gas_alt"
+	item_state = "gas_mask"
 	desc = "It looks like a plain gask mask, but on closer inspection, it seems to have a small dial inside."
 	origin_tech = list(TECH_ILLEGAL = 3)
 	var/global/list/clothing_choices

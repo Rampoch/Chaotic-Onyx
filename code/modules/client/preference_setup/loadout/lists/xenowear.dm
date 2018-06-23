@@ -83,11 +83,11 @@
 	whitelisted = list(SPECIES_IPC)
 
 // Misc clothing
-/datum/gear/uniform/harness
-	display_name = "gear harness (Full Body Prosthetic, Diona, Giant Armoured Serpentid)"
-	path = /obj/item/clothing/under/harness
-	sort_category = "Xenowear"
-	whitelisted = list(SPECIES_IPC,SPECIES_DIONA, SPECIES_NABBER)
+// /datum/gear/uniform/harness
+// 	display_name = "gear harness (Full Body Prosthetic, Diona, Giant Armoured Serpentid)"
+// 	path = /obj/item/clothing/under/harness
+// 	sort_category = "Xenowear"
+// 	whitelisted = list(SPECIES_IPC,SPECIES_DIONA, SPECIES_NABBER)
 
 /datum/gear/shoes/toeless
 	display_name = "toeless jackboots"
@@ -176,12 +176,6 @@
 /datum/gear/gloves/rainbow/modified
 	display_name = "modified gloves, rainbow"
 	path = /obj/item/clothing/gloves/rainbow/modified
-	sort_category = "Xenowear"
-	whitelisted = list(SPECIES_TAJARA, SPECIES_UNATHI)
-
-/datum/gear/gloves/evening/modified
-	display_name = "modified gloves, evening"
-	path = /obj/item/clothing/gloves/color/evening/modified
 	sort_category = "Xenowear"
 	whitelisted = list(SPECIES_TAJARA, SPECIES_UNATHI)
 

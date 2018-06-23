@@ -15,13 +15,16 @@
 	max_age = 100
 	gluttonous = GLUT_TINY
 
+	body_builds = list(
+		new/datum/body_build,
+		new/datum/body_build/slim,
+		new/datum/body_build/slim/alt
+	)
+
 	spawn_flags = SPECIES_CAN_JOIN
 	appearance_flags = HAS_HAIR_COLOR | HAS_SKIN_TONE_NORMAL | HAS_LIPS | HAS_UNDERWEAR | HAS_EYE_COLOR
 
 	sexybits_location = BP_GROIN
-
-/datum/species/human/get_bodytype(var/mob/living/carbon/human/H)
-	return SPECIES_HUMAN
 
 /datum/species/human/handle_npc(var/mob/living/carbon/human/H)
 	if(H.stat != CONSCIOUS)
@@ -102,6 +105,10 @@
 	went through is heavily tied to their spiritual beliefs. Recent discoveries have jumpstarted the progression \
 	of highly advanced cybernetic technology, causing a culture shock within Tajaran society."
 
+	body_builds = list(
+		new/datum/body_build/tajaran
+	)
+
 	cold_level_1 = 200 //Default 260
 	cold_level_2 = 140 //Default 200
 	cold_level_3 = 80  //Default 120
@@ -115,10 +122,10 @@
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
 	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR | HAS_EYE_COLOR
 
-	flesh_color = "#afa59e"
+	flesh_color = "#663300"
 	base_color = "#333333"
 	blood_color = "#862a51"
-
+	organs_icon = 'icons/mob/human_races/organs/tajaran.dmi'
 	reagent_tag = IS_TAJARA
 
 	move_trail = /obj/effect/decal/cleanable/blood/tracks/paw
@@ -159,14 +166,31 @@
 	min_age = 19
 	max_age = 90
 
+	body_builds = list(
+		new/datum/body_build
+	)
+
+	burn_mod = 0.9
+	oxy_mod = 1.3
+	flash_mod = 1.1
+	toxins_mod = 0.8
+	siemens_coefficient = 1.3
+	warning_low_pressure = WARNING_LOW_PRESSURE * 1.4
+	hazard_low_pressure = HAZARD_LOW_PRESSURE * 2
+	warning_high_pressure = WARNING_HIGH_PRESSURE / 0.8125
+	hazard_high_pressure = HAZARD_HIGH_PRESSURE / 0.84615
+
+	body_temperature = null // cold-blooded, implemented the same way nabbers do it
+
 	darksight = 4
 
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
 	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR
 
-	flesh_color = "#8cd7a3"
+	flesh_color = "#339966"
 	blood_color = "#1d2cbf"
 	base_color = "#006666"
+	organs_icon = 'icons/mob/human_races/organs/skrell.dmi'
 
 	cold_level_1 = 280 //Default 260 - Lower is better
 	cold_level_2 = 220 //Default 200
@@ -224,6 +248,10 @@
 	even the simplest concepts of other minds. Their alien physiology allows them survive happily off a diet of nothing but light, \
 	water and other radiation."
 
+	body_builds = list(
+		new/datum/body_build
+	)
+
 	has_organ = list(
 		BP_NUTRIENT = /obj/item/organ/internal/diona/nutrients,
 		BP_STRATA =   /obj/item/organ/internal/diona/strata,
@@ -267,7 +295,7 @@
 
 	species_flags = SPECIES_FLAG_NO_SCAN | SPECIES_FLAG_IS_PLANT | SPECIES_FLAG_NO_PAIN | SPECIES_FLAG_NO_SLIP
 	appearance_flags = 0
-	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED | SPECIES_NO_FBP_CONSTRUCTION | SPECIES_NO_FBP_CHARGEN | SPECIES_NO_LACE
+	spawn_flags = SPECIES_IS_RESTRICTED | SPECIES_NO_FBP_CONSTRUCTION | SPECIES_NO_FBP_CHARGEN | SPECIES_NO_LACE
 
 	blood_color = "#004400"
 	flesh_color = "#907e4a"

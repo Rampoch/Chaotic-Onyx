@@ -16,6 +16,13 @@
 	item_state = null
 	w_class = ITEM_SIZE_TINY
 
+
+/obj/item/clothing/mask/muzzle/ballgag
+	name = "Ballgag"
+	desc = "For when Master wants silence."
+	icon_state = "ballgag"
+	item_state = "ballgag"
+
 /obj/item/clothing/mask/muzzle/Initialize()
 	. = ..()
 	say_messages = list("Mmfph!", "Mmmf mrrfff!", "Mmmf mnnf!")
@@ -42,9 +49,6 @@
 	down_body_parts_covered = null
 	down_icon_state = "steriledown"
 	pull_mask = 1
-	sprite_sheets = list(
-		SPECIES_TAJARA = 'icons/mob/species/tajaran/mask.dmi'
-		)
 
 /obj/item/clothing/mask/fakemoustache
 	name = "fake moustache"
@@ -259,7 +263,7 @@
 	item_state = "spirit_mask"
 	flags_inv = HIDEFACE
 	body_parts_covered = FACE|EYES
-	
+
 // Bandanas below
 /obj/item/clothing/mask/bandana
 	name = "black bandana"
@@ -278,13 +282,11 @@
 			flags_inv = initial(flags_inv)
 			body_parts_covered = initial(body_parts_covered)
 			icon_state = initial(icon_state)
-			sprite_sheets = list(SPECIES_TAJARA = 'icons/mob/species/tajaran/mask.dmi')
 
 		if(slot_head)
 			flags_inv = 0
 			body_parts_covered = HEAD
 			icon_state = "[initial(icon_state)]_up"
-			sprite_sheets = list()
 
 	return ..()
 
@@ -307,22 +309,22 @@
 	name = "gold bandana"
 	icon_state = "bandgold"
 	item_state = "bandgold"
-	
+
 /obj/item/clothing/mask/bandana/orange
 	name = "orange bandana"
 	icon_state = "bandorange"
 	item_state = "bandorange"
-	
+
 /obj/item/clothing/mask/bandana/purple
 	name = "purple bandana"
 	icon_state = "bandpurple"
 	item_state = "bandpurple"
-	
+
 /obj/item/clothing/mask/bandana/botany
 	name = "botany bandana"
 	icon_state = "bandbotany"
 	item_state = "bandbotany"
-	
+
 /obj/item/clothing/mask/bandana/camo
 	name = "camo bandana"
 	icon_state = "bandcamo"
@@ -333,4 +335,4 @@
 	desc = "A fine black bandana with nanotech lining and a skull emblem. Can be worn on the head or face."
 	icon_state = "bandskull"
 	item_state = "bandskull"
-	
+

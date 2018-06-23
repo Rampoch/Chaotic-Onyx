@@ -307,7 +307,6 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		if(!choice) return
 		pref.species_preview = choice
 		SetSpecies(preference_mob())
-		pref.alternate_languages.Cut() // Reset their alternate languages. Todo: attempt to just fix it instead?
 		return TOPIC_HANDLED
 
 	else if(href_list["set_species"])
@@ -321,15 +320,29 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 			mob_species = all_species[pref.species]
 			if(!(pref.gender in mob_species.genders))
 				pref.gender = mob_species.genders[1]
+			if(!(pref.body in mob_species.body_builds))
+				var/datum/body_build/BB = mob_species.body_builds[1]
+				pref.body = BB.name
 
 			ResetAllHair()
 
-			//reset hair colour and skin colour
-			pref.r_hair = 0//hex2num(copytext(new_hair, 2, 4))
-			pref.g_hair = 0//hex2num(copytext(new_hair, 4, 6))
-			pref.b_hair = 0//hex2num(copytext(new_hair, 6, 8))
+			//reset colors
+			pref.r_hair = 0
+			pref.g_hair = 0
+			pref.b_hair = 0
+			pref.r_facial = 0
+			pref.g_facial = 0
+			pref.b_facial = 0
 			pref.s_tone = 0
+			pref.r_skin = hex2num(copytext(mob_species.flesh_color, 2, 4))
+			pref.g_skin = hex2num(copytext(mob_species.flesh_color, 4, 6))
+			pref.b_skin = hex2num(copytext(mob_species.flesh_color, 6, 8))
+			pref.r_eyes = 0
+			pref.g_eyes = 0
+			pref.b_eyes = 0
 			pref.age = max(min(pref.age, mob_species.max_age), mob_species.min_age)
+
+			pref.alternate_languages = mob_species.secondary_langs
 
 			reset_limbs() // Safety for species with incompatible manufacturers; easier than trying to do it case by case.
 			pref.body_markings.Cut() // Basically same as above.
@@ -661,17 +674,21 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 	var/restricted = 0
 	if(config.usealienwhitelist) //If we're using the whitelist, make sure to check it!
-		if(!(current_species.spawn_flags & SPECIES_CAN_JOIN))
+		if (!(current_species.spawn_flags & SPECIES_CAN_JOIN))
 			restricted = 2
-		else if((current_species.spawn_flags & SPECIES_IS_WHITELISTED) && !is_alien_whitelisted(preference_mob(),current_species))
+		else if ((current_species.spawn_flags & SPECIES_IS_WHITELISTED) && !is_alien_whitelisted(preference_mob(),current_species))
 			restricted = 1
+		else if (jobban_isbanned(user, "SPECIES"))
+			restricted = 3
 
-	if(restricted)
-		if(restricted == 1)
-			dat += "<font color='red'><b>You cannot play as this species.</br><small>If you wish to be whitelisted, you can make an application post on <a href='?src=\ref[user];preference=open_whitelist_forum'>the forums</a>.</small></b></font></br>"
-		else if(restricted == 2)
+	if (restricted)
+		if (restricted == 1)
+			dat += "<font color='red'><b>You cannot play as this species.</br><small>If you wish to be whitelisted, contact admins by AHelp.</small></b></font></br>"
+		else if (restricted == 2)
 			dat += "<font color='red'><b>You cannot play as this species.</br><small>This species is not available as a player race.</small></b></font></br>"
-	if(!restricted || check_rights(R_ADMIN, 0))
+		else if (restricted == 3)
+			dat += "<font color='red'><b>You cannot play as this species.</br><small>You was banned to play species!</small></b></font></br>"
+	if (!restricted)
 		dat += "\[<a href='?src=\ref[src];set_species=[pref.species_preview]'>select</a>\]"
 	dat += "</center></body>"
 

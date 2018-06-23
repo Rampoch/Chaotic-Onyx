@@ -28,7 +28,7 @@
 	..(destination, interim, emergency_controller.get_long_jump_time(), direction)
 
 /datum/shuttle/autodock/ferry/emergency/shuttle_moved()
-	if(next_location != waypoint_station)
+	if(current_location == waypoint_station)
 		emergency_controller.shuttle_leaving() // This is a hell of a line. v
 		priority_announcement.Announce(replacetext(replacetext((emergency_controller.emergency_evacuation ? GLOB.using_map.emergency_shuttle_leaving_dock : GLOB.using_map.shuttle_leaving_dock), "%dock_name%", "[GLOB.using_map.dock_name]"),  "%ETA%", "[round(emergency_controller.get_eta()/60,1)] minute\s"))
 	else if(next_location == waypoint_offsite && emergency_controller.has_evacuated())
@@ -125,11 +125,6 @@
 		return 0
 	if (authorized.len >= req_authorizations)
 		return 0 //don't need any more
-
-	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.using_map.security_state)
-	if (!evacuation_controller.emergency_evacuation && security_state.current_security_level_is_lower_than(security_state.high_security_level))
-		src.visible_message("\The [src] buzzes. It does not appear to be accepting any commands.")
-		return 0
 
 	var/list/access
 	var/auth_name

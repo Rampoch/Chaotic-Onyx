@@ -82,12 +82,16 @@ var/global/floorIsLava = 0
 			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_ADMINHELP]'><font color='[(muted & MUTE_ADMINHELP)?"red":"blue"]'>ADMINHELP</font></a> |
 			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_DEADCHAT]'><font color='[(muted & MUTE_DEADCHAT)?"red":"blue"]'>DEADCHAT</font></a>\]
 			(<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_ALL]'><font color='[(muted & MUTE_ALL)?"red":"blue"]'>toggle all</font></a>)
-		"}
+	"}
+
 		body += "<br><br><b>Staff Warning:</b> [M.client.staffwarn ? M.client.staffwarn : "No"]<br>"
 		if (!M.client.staffwarn)
 			body += "<A href='?src=\ref[src];setstaffwarn=\ref[M]'>Set StaffWarn</A>"
 		else
 			body += "<A href='?src=\ref[src];removestaffwarn=\ref[M]'>Remove StaffWarn</A>"
+
+		body += EAMS_GetPlayerPannelButton(src, M.client)
+		body += SpeciesIngameWhitelist_GetPlayerPannelButton(src, M.client)
 
 	body += {"<br><br>
 		<A href='?src=\ref[src];jumpto=\ref[M]'><b>Jump to</b></A> |
@@ -649,7 +653,7 @@ var/global/floorIsLava = 0
 		for(var/datum/admin_secret_item/item in active_category.items)
 			if(!item.can_view(usr))
 				continue
-			dat += "<A href='?src=\ref[src];admin_secrets=\ref[item]'>[item.name()]</A><BR>"
+			dat += "<A href='?src=\ref[src];admin_secrets=\ref[item]'>[rustoutf(item.name())]</A><BR>"
 		dat += "<BR>"
 
 	var/datum/browser/popup = new(usr, "secrets", "Secrets", 550, 500)
@@ -683,6 +687,16 @@ var/global/floorIsLava = 0
 		sleep(50)
 		world.Reboot()
 
+
+/datum/admins/proc/changemap()
+	set category = "Server"
+	set name = "Change map"
+	if(!check_rights(R_SERVER)) return
+	var/datum/map/M = GLOB.all_maps[input("Select map:","Change map",GLOB.using_map) as null|anything in GLOB.all_maps]
+	if(M)
+		log_admin("[key_name(usr)] changed map to [M.name]")
+		fdel("data/use_map")
+		text2file("[M.type]", "data/use_map")
 
 /datum/admins/proc/announce()
 	set category = "Special Verbs"

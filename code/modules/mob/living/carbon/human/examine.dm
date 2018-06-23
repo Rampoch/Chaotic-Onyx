@@ -187,6 +187,10 @@
 		else if(!client)
 			msg += "<span class='deadsay'>[T.He] [T.is] [ssd_msg].</span>\n"
 
+	var/obj/item/organ/external/head/H = organs_by_name[BP_HEAD]
+	if(istype(H) && H.forehead_graffiti && H.graffiti_style)
+		msg += "<span class='notice'>[T.He] [T.has] \"[H.forehead_graffiti]\" written on [T.his] [H.name] in [H.graffiti_style]!</span>\n"
+
 	var/list/wound_flavor_text = list()
 	var/applying_pressure = ""
 	var/list/shown_objects = list()
@@ -250,7 +254,7 @@
 	if(digitalcamo)
 		msg += "[T.He] [T.is] repulsively uncanny!\n"
 
-	if(hasHUD(user,"security"))
+	if(hasHUD(user, HUD_SECURITY))
 		var/perpname = "wot"
 		var/criminal = "None"
 
@@ -271,7 +275,7 @@
 			msg += "<span class = 'deptradio'>Criminal status:</span> <a href='?src=\ref[src];criminal=1'>\[[criminal]\]</a>\n"
 			msg += "<span class = 'deptradio'>Security records:</span> <a href='?src=\ref[src];secrecord=`'>\[View\]</a>\n"
 
-	if(hasHUD(user,"medical"))
+	if(hasHUD(user, HUD_MEDICAL))
 		var/perpname = "wot"
 		var/medical = "None"
 
@@ -308,32 +312,15 @@
 /proc/hasHUD(mob/M as mob, hudtype)
 	if(istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
-		switch(hudtype)
-			if("security")
-				if(istype(H.glasses,/obj/item/clothing/glasses))
-					var/obj/item/clothing/glasses/G = H.glasses
-					return istype(G.hud, /obj/item/clothing/glasses/hud/security) || istype(G, /obj/item/clothing/glasses/hud/security)
-				else
-					return FALSE
-			if("medical")
-				if(istype(H.glasses,/obj/item/clothing/glasses))
-					var/obj/item/clothing/glasses/G = H.glasses
-					return istype(G.hud, /obj/item/clothing/glasses/hud/health) || istype(G, /obj/item/clothing/glasses/hud/health)
-				else
-					return FALSE
-			else
-				return 0
+		var/obj/item/clothing/glasses/G = H.glasses
+		return istype(G) && ((G.hud_type & hudtype) || (G.hud && (G.hud.hud_type & hudtype)))
 	else if(istype(M, /mob/living/silicon/robot))
 		var/mob/living/silicon/robot/R = M
-		switch(hudtype)
-			if("security")
-				return istype(R.module_state_1, /obj/item/borg/sight/hud/sec) || istype(R.module_state_2, /obj/item/borg/sight/hud/sec) || istype(R.module_state_3, /obj/item/borg/sight/hud/sec)
-			if("medical")
-				return istype(R.module_state_1, /obj/item/borg/sight/hud/med) || istype(R.module_state_2, /obj/item/borg/sight/hud/med) || istype(R.module_state_3, /obj/item/borg/sight/hud/med)
-			else
-				return 0
-	else
-		return 0
+		for(var/obj/item/borg/sight/sight in list(R.module_state_1, R.module_state_2, R.module_state_3))
+			if(istype(sight) && (sight.hud_type & hudtype))
+				return TRUE
+
+	return FALSE
 
 /mob/living/carbon/human/verb/pose()
 	set name = "Set Pose"

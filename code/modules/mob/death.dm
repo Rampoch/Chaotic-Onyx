@@ -18,9 +18,11 @@
 	flick(anim, animation)
 	if(do_gibs) gibs(loc, dna)
 
-	spawn(15)
-		if(animation)	qdel(animation)
-		if(src)			qdel(src)
+	addtimer(CALLBACK(src, .proc/check_delete, animation), 15)
+
+/mob/proc/check_delete(var/atom/movable/overlay/animation)
+	if(animation)	qdel(animation)
+	if(src)			qdel(src)
 
 //This is the proc for turning a mob into ash. Mostly a copy of gib code (above).
 //Originally created for wizard disintegrate. I've removed the virus code since it's irrelevant here.
@@ -42,9 +44,7 @@
 	new remains(loc)
 
 	remove_from_dead_mob_list()
-	spawn(15)
-		if(animation)	qdel(animation)
-		if(src)			qdel(src)
+	addtimer(CALLBACK(src, .proc/check_delete, animation), 15)
 
 
 /mob/proc/death(gibbed,deathmessage="seizes up and falls limp...", show_dead_message = "You have died.")
@@ -67,6 +67,8 @@
 	set_sight(sight|SEE_TURFS|SEE_MOBS|SEE_OBJS)
 	set_see_in_dark(8)
 	set_see_invisible(SEE_INVISIBLE_LEVEL_TWO)
+
+	verbs += /mob/living/proc/ghost
 
 	drop_r_hand()
 	drop_l_hand()

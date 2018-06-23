@@ -859,7 +859,7 @@
 /mob/proc/embedded_needs_process()
 	return (embedded.len > 0)
 
-mob/proc/yank_out_object()
+/mob/proc/yank_out_object()
 	set category = "Object"
 	set name = "Yank out object"
 	set desc = "Remove an embedded item at the cost of bleeding and pain."
@@ -899,7 +899,7 @@ mob/proc/yank_out_object()
 		to_chat(src, "<span class='warning'>You attempt to get a good grip on [selection] in your body.</span>")
 	else
 		to_chat(U, "<span class='warning'>You attempt to get a good grip on [selection] in [S]'s body.</span>")
-	if(!do_mob(U, S, 30))
+	if(!do_mob(U, S, 30, incapacitation_flags = INCAPACITATION_DEFAULT & (~INCAPACITATION_FORCELYING))) //let people pinned to stuff yank it out, otherwise they're stuck... forever!!!
 		return
 	if(!selection || !S || !U)
 		return
@@ -964,18 +964,18 @@ mob/proc/yank_out_object()
 /mob/update_icon()
 	return
 
-/mob/verb/face_direction()
+// /mob/verb/face_direction()
+// 	set name = "Face Direction"
+// 	set category = "IC"
+// 	set src = usr
 
-	set name = "Face Direction"
-	set category = "IC"
-	set src = usr
+// 	set_face_dir()
 
-	set_face_dir()
+// 	if(!facing_dir)
+// 		to_chat(usr, "You are now not facing anything.")
+// 	else
+// 		to_chat(usr, "You are now facing [dir2text(facing_dir)].")
 
-	if(!facing_dir)
-		to_chat(usr, "You are now not facing anything.")
-	else
-		to_chat(usr, "You are now facing [dir2text(facing_dir)].")
 /mob/proc/set_face_dir(var/newdir)
 	if(!isnull(facing_dir) && newdir == facing_dir)
 		facing_dir = null
@@ -1001,21 +1001,21 @@ mob/proc/yank_out_object()
 	. = stat != new_stat
 	stat = new_stat
 
-/mob/verb/northfaceperm()
-	set hidden = 1
-	set_face_dir(client.client_dir(NORTH))
-
-/mob/verb/southfaceperm()
-	set hidden = 1
-	set_face_dir(client.client_dir(SOUTH))
-
-/mob/verb/eastfaceperm()
-	set hidden = 1
-	set_face_dir(client.client_dir(EAST))
-
-/mob/verb/westfaceperm()
-	set hidden = 1
-	set_face_dir(client.client_dir(WEST))
+// /mob/verb/northfaceperm()
+// 	set hidden = 1
+// 	set_face_dir(client.client_dir(NORTH))
+//
+// /mob/verb/southfaceperm()
+// 	set hidden = 1
+// 	set_face_dir(client.client_dir(SOUTH))
+//
+// /mob/verb/eastfaceperm()
+// 	set hidden = 1
+// 	set_face_dir(client.client_dir(EAST))
+//
+// /mob/verb/westfaceperm()
+// 	set hidden = 1
+// 	set_face_dir(client.client_dir(WEST))
 
 /mob/proc/adjustEarDamage()
 	return

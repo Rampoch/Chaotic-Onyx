@@ -2,6 +2,7 @@ datum/preferences
 	var/real_name						//our character's name
 	var/be_random_name = 0				//whether we are a random name every round
 	var/gender = MALE					//gender of character (well duh)
+	var/body = "Default"
 	var/age = 30						//age of character
 	var/spawnpoint = "Default" 			//where this character will spawn (0-2).
 	var/metadata = ""
@@ -14,6 +15,9 @@ datum/preferences
 	S["real_name"]				>> pref.real_name
 	S["name_is_always_random"]	>> pref.be_random_name
 	S["gender"]					>> pref.gender
+	S["body"]					>> pref.body
+	if (!pref.body)
+		pref.body = "Default" // fucking crutch for hot fix
 	S["age"]					>> pref.age
 	S["spawnpoint"]				>> pref.spawnpoint
 	S["OOC_Notes"]				>> pref.metadata
@@ -22,15 +26,22 @@ datum/preferences
 	S["real_name"]				<< pref.real_name
 	S["name_is_always_random"]	<< pref.be_random_name
 	S["gender"]					<< pref.gender
+	S["body"]					<< pref.body
 	S["age"]					<< pref.age
 	S["spawnpoint"]				<< pref.spawnpoint
 	S["OOC_Notes"]				<< pref.metadata
 
+/datum/category_item/player_setup_item/general/basic/proc/sanitize_body()
+	var/datum/species/S = all_species[pref.species]
+	if (!S) S = all_species[SPECIES_HUMAN]
+	pref.body = sanitize_inlist(pref.body, S.get_body_build_list(pref.gender), S.get_body_build(pref.gender))
+
 /datum/category_item/player_setup_item/general/basic/sanitize_character()
 	var/datum/species/S = all_species[pref.species ? pref.species : SPECIES_HUMAN]
-	if(!S) S = all_species[SPECIES_HUMAN]
+	if (!S) S = all_species[SPECIES_HUMAN]
 	pref.age                = sanitize_integer(pref.age, S.min_age, S.max_age, initial(pref.age))
 	pref.gender             = sanitize_inlist(pref.gender, S.genders, pick(S.genders))
+	sanitize_body()
 	pref.real_name          = sanitize_name(pref.real_name, pref.species)
 	if(!pref.real_name)
 		pref.real_name      = random_name(pref.gender, pref.species)
@@ -45,6 +56,7 @@ datum/preferences
 	. += "<a href='?src=\ref[src];always_random_name=1'>Always Random Name: [pref.be_random_name ? "Yes" : "No"]</a>"
 	. += "<br>"
 	. += "<b>Gender:</b> <a href='?src=\ref[src];gender=1'><b>[gender2text(pref.gender)]</b></a><br>"
+	. += "<b>Body Build:</b> <a href='?src=\ref[src];body_build=1'><b>[pref.body]</b></a><br>"
 	. += "<b>Age:</b> <a href='?src=\ref[src];age=1'>[pref.age]</a><br>"
 	. += "<b>Spawn Point</b>: <a href='?src=\ref[src];spawnpoint=1'>[pref.spawnpoint]</a><br>"
 	if(config.allow_Metadata)
@@ -77,8 +89,17 @@ datum/preferences
 		S = all_species[pref.species]
 		if(new_gender && CanUseTopic(user) && (new_gender in S.genders))
 			pref.gender = new_gender
+
 			if(!(pref.f_style in S.get_facial_hair_styles(pref.gender)))
 				ResetFacialHair()
+
+			var/list/body_builds = S.get_body_build_list(pref.gender)
+			if(!(pref.body in body_builds))
+				pref.body = body_builds[1]
+		return TOPIC_REFRESH_UPDATE_PREVIEW
+
+	else if(href_list["body_build"])
+		pref.body = next_in_list(pref.body, S.get_body_build_list(pref.gender))
 		return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	else if(href_list["age"])

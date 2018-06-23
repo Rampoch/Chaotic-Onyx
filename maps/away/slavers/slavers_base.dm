@@ -61,7 +61,7 @@
 
 /decl/hierarchy/outfit/corpse
 	name = "Corpse Clothing"
-	
+
 /decl/hierarchy/outfit/corpse/New()
 	..()
 	hierarchy_type = type
@@ -85,7 +85,7 @@
 
 /decl/hierarchy/outfit/corpse/slavers_base/slaver2
 	name = "Dead Slaver 2"
-	uniform = /obj/item/clothing/under/grayson
+	//uniform = /obj/item/clothing/under/grayson
 	shoes = /obj/item/clothing/shoes/blue
 
 /obj/effect/landmark/corpse/slavers_base/slaver3
@@ -122,7 +122,7 @@
 
 /decl/hierarchy/outfit/corpse/slavers_base/slaver6
 	name = "Dead Slaver 6"
-	uniform = /obj/item/clothing/under/frontier
+	//uniform = /obj/item/clothing/under/frontier
 	shoes = /obj/item/clothing/shoes/orange
 
 /obj/effect/landmark/corpse/slavers_base/slave
@@ -132,7 +132,7 @@
 /decl/hierarchy/outfit/corpse/slavers_base/slave
 	name = "Dead Slave"
 	uniform = /obj/item/clothing/under/color/orange
-	shoes = /obj/item/clothing/shoes/tactical
+	shoes = /obj/item/clothing/shoes/jackboots
 
 /mob/living/simple_animal/hostile/abolition_extremist
 	name = "abolition extremist"
@@ -153,6 +153,7 @@
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 30
+	can_escape = 1
 	unsuitable_atoms_damage = 15
 	var/corpse = /obj/effect/landmark/corpse/abolitionist
 	var/weapon = /obj/item/weapon/gun/energy/laser

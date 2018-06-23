@@ -268,9 +268,7 @@ GLOBAL_DATUM_INIT(_preloader, /dmm_suite/preloader, new)
 			old_position = dpos + 1
 
 			if(!atom_def) // Skip the item if the path does not exist.  Fix your crap, mappers!
-	#ifdef UNIT_TEST
 				log_error("Couldn't find atom path specified in map: [full_def]")
-	#endif
 				if (dpos == 0)
 					break
 				else
@@ -376,7 +374,7 @@ GLOBAL_DATUM_INIT(_preloader, /dmm_suite/preloader, new)
 	if (clear_contents && is_not_noop)
 		for (var/type_to_delete in types_to_delete())
 			for (var/atom/pre_existing in crds)
-				if (istype(pre_existing, type_to_delete))
+				if (istype(pre_existing, type_to_delete) && pre_existing.loc == crds)
 					atoms_to_delete |= pre_existing
 
 	//finally instance all remainings objects/mobs
@@ -460,7 +458,10 @@ GLOBAL_DATUM_INIT(_preloader, /dmm_suite/preloader, new)
 
 	//Check for file
 	else if(copytext(text,1,2) == "'")
-		. = file(copytext(text,2,length(text)))
+		. = cache_ref[lowertext(text)]
+		if(!.)
+			warning("Map referencing cache file [text]")
+			. = file(copytext(text,2,length(text)))
 
 	//Check for path
 	else if(ispath(text2path(text)))

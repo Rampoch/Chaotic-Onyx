@@ -9,7 +9,8 @@ var/list/admin_verbs_default = list(
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
 	/client/proc/debug_global_variables,//as above but for global variables,
 //	/client/proc/check_antagonists,		//shows all antags,
-	/client/proc/cmd_mentor_check_new_players
+	/client/proc/cmd_mentor_check_new_players,
+	/client/proc/checkAccount
 //	/client/proc/deadchat				//toggles deadchat on/off,
 	)
 var/list/admin_verbs_admin = list(
@@ -68,6 +69,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_say,			//admin-only ooc chat,
 	/datum/admins/proc/togglehubvisibility, //toggles visibility on the BYOND Hub,
 	/datum/admins/proc/PlayerNotes,
+	/client/proc/panicbunker,			//toggles Panic Bunker
+	/client/proc/EAMS_toggle,			//toggles Epic Anti-Multiacc System
 	/client/proc/cmd_mod_say,
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
@@ -101,7 +104,8 @@ var/list/admin_verbs_admin = list(
 )
 var/list/admin_verbs_ban = list(
 	/client/proc/unban_panel,
-	/client/proc/jobbans
+	/client/proc/jobbans,
+	/client/proc/DB_ban_panel
 	)
 var/list/admin_verbs_sounds = list(
 	/client/proc/play_local_sound,
@@ -145,6 +149,7 @@ var/list/admin_verbs_server = list(
 	/client/proc/Set_Holiday,
 	/datum/admins/proc/startnow,
 	/datum/admins/proc/restart,
+	/datum/admins/proc/changemap,
 	/datum/admins/proc/delay,
 	/datum/admins/proc/toggleaban,
 	/client/proc/toggle_log_hrefs,
@@ -268,6 +273,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/Set_Holiday,
 	/datum/admins/proc/startnow,
 	/datum/admins/proc/restart,
+	/datum/admins/proc/changemap,
 	/datum/admins/proc/delay,
 	/datum/admins/proc/toggleaban,
 	/client/proc/toggle_log_hrefs,
@@ -613,7 +619,7 @@ var/list/admin_verbs_mentor = list(
 	if(istype(T,/mob/living/carbon/human))
 		var/mob/living/carbon/human/H = T
 		if (H.species)
-			D.affected_species = list(H.species.get_bodytype(H))
+			D.affected_species = list(H.species.name)
 			if(H.species.primitive_form)
 				D.affected_species |= H.species.primitive_form
 			if(H.species.greater_form)

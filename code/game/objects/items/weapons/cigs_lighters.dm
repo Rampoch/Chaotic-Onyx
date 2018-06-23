@@ -226,7 +226,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	..()
 	overlays.Cut()
 	if(lit)
-		overlays += overlay_image(icon, "cigon", flags=RESET_COLOR)
+		overlays += overlay_image(icon, "cigember", flags=RESET_COLOR)
 
 /obj/item/clothing/mask/smokable/cigarette/trident/update_icon()
 	..()
@@ -381,7 +381,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		die(1)
 	return ..()
 
-/obj/item/clothing/mask/smokable/cigarette/get_icon_state(mob/user_mob, slot)
+/obj/item/clothing/mask/smokable/cigarette/get_icon_state(slot)
 	return item_state
 
 /obj/item/clothing/mask/smokable/cigarette/get_mob_overlay(mob/user_mob, slot)

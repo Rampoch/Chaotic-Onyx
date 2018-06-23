@@ -36,6 +36,9 @@ LOG_SAY
 ## log admin actions
 LOG_ADMIN
 
+## log asay/msay
+LOG_ASAY
+
 ## log client access (logon/logoff)
 LOG_ACCESS
 
@@ -87,18 +90,55 @@ MOD_TEMPBAN_MAX 1440
 ## Maximum mod job tempban duration (in minutes)
 MOD_JOB_TEMPBAN_MAX 1440
 
+## Panic Bunker
+# PANIC_BUNKER
+
+## Epic Anti-Multiacc System
+EAMS
 
 ## probablities for game modes chosen in "secret" and "random" modes
 ##
 ## default probablity is 1, increase to make that mode more likely to be picked
 ## set to 0 to disable that mode
-PROBABILITY EXTENDED 1
-PROBABILITY MALFUNCTION 1
-PROBABILITY MERCENARY 1
-PROBABILITY WIZARD 1
-PROBABILITY CHANGELING 1
-PROBABILITY CULT 1
-PROBABILITY EXTEND-A-TRAITORMONGOUS 6
+
+PROBABILITY extended 0
+PROBABILITY traitor 3
+PROBABILITY changeling 3
+PROBABILITY wizard 1
+PROBABILITY malfunction 1
+PROBABILITY ninja 1
+PROBABILITY revolution 2
+PROBABILITY cult 2
+PROBABILITY mercenary 1
+PROBABILITY meteor 1
+
+PROBABILITY calamity 2
+## Deity
+PROBABILITY god 1
+## Cult & wizard
+PROBABILITY conflux 2
+## Ninja & traitor
+PROBABILITY intrigue 2
+## Changelings & wizards
+PROBABILITY lizard 2
+	
+## Changeling, malf & renegade
+PROBABILITY paranoia 2
+## Changeling & traitor
+PROBABILITY traitorling 3
+## Revolution & wizard
+PROBABILITY unity 1
+## Cult & revolution
+PROBABILITY uprising 2
+## Ninja & wizard
+PROBABILITY visitors 1
+## Mercenary & revolution
+PROBABILITY siege 2
+
+##PROBABILITY heist 			0
+##PROBABILITY bughunt 			0	## Deathsquad & xenophage
+##PROBABILITY crossfire 		0	## Mercenary & heist
+##PROBABILITY infestation 		0	## Borer, changeling & xenophage
 
 ## Hash out to disable random events during the round.
 ALLOW_RANDOM_EVENTS
@@ -223,7 +263,7 @@ ALLOW_HOLIDAYS
 TICKLAG 0.7
 
 ##Defines world FPS. Defaults to 20.
-# FPS 20
+FPS 60
 
 ## Whether the server will talk to other processes through socket_talk
 SOCKET_TALK 0
@@ -323,6 +363,9 @@ EVENT_CUSTOM_START_MAJOR 80;100
 
 ## Uncomment to disable the OOC channel by default.
 #DISABLE_OOC
+
+## Uncomment to disable the LOOC channel by default.
+#DISABLE_LOOC
 
 ## Uncomment to disable the dead OOC channel by default.
 #DISABLE_DEAD_OOC

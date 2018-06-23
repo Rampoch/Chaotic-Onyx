@@ -8,6 +8,7 @@ var/list/gamemode_cache = list()
 	var/log_access = 0					// log login/logout
 	var/log_say = 0						// log client say
 	var/log_admin = 0					// log admin actions
+	var/log_asay = 0					// log admin/mod say
 	var/log_debug = 1					// log debug output
 	var/log_game = 0					// log game events
 	var/log_vote = 0					// log voting
@@ -24,6 +25,7 @@ var/list/gamemode_cache = list()
 	var/allow_admin_ooccolor = 0		// Allows admins with relevant permissions to have their own ooc colour
 	var/allow_vote_restart = 0 			// allow votes to restart
 	var/ert_admin_call_only = 0
+	var/panic_DB_log = TRUE //Logging Panic Bunker
 	var/allow_vote_mode = 0				// allow votes to change mode
 	var/allow_admin_jump = 1			// allows admin jumping
 	var/allow_admin_spawning = 1		// allows admin item spawning
@@ -59,6 +61,8 @@ var/list/gamemode_cache = list()
 	var/hostedby = null
 	var/respawn_delay = 30
 	var/guest_jobban = 1
+	var/panic_bunker = 0
+	var/eams = 0
 	var/usewhitelist = 0
 	var/kick_inactive = 0				//force disconnect for inactive players after this many minutes, if non-0
 	var/mods_can_tempban = 0
@@ -83,7 +87,8 @@ var/list/gamemode_cache = list()
 	var/uneducated_mice = 0 //Set to 1 to prevent newly-spawned mice from understanding human speech
 
 	var/usealienwhitelist = 0
-	var/usealienwhitelistSQL = 0;
+	var/useingamealienwhitelist = 0
+	var/usealienwhitelistSQL = 0
 	var/limitalienplayers = 0
 	var/alien_to_human_ratio = 0.5
 	var/allow_extra_antags = 0
@@ -154,6 +159,8 @@ var/list/gamemode_cache = list()
 
 	var/comms_password = ""
 	var/ban_comms_password = null
+	var/webhook_address
+	var/webhook_key
 
 	var/login_export_addr = null
 
@@ -217,7 +224,7 @@ var/list/gamemode_cache = list()
 
 	var/max_gear_cost = 10 // Used in chargen for accessory loadout limit. 0 disables loadout, negative allows infinite points.
 
-/datum/configuration/New()
+/datum/configuration/proc/initialize()
 	var/list/L = typesof(/datum/game_mode) - /datum/game_mode
 	for (var/T in L)
 		// I wish I didn't have to instance the game modes in order to look up
@@ -299,6 +306,9 @@ var/list/gamemode_cache = list()
 
 				if ("log_admin")
 					config.log_admin = 1
+
+				if ("log_asay")
+					config.log_asay = 1
 
 				if ("log_debug")
 					config.log_debug = text2num(value)
@@ -436,6 +446,8 @@ var/list/gamemode_cache = list()
 
 				if ("disable_ooc")
 					config.ooc_allowed = 0
+
+				if ("disable_looc")
 					config.looc_allowed = 0
 
 				if ("disable_aooc")
@@ -505,6 +517,7 @@ var/list/gamemode_cache = list()
 						prob_value = copytext(value, prob_pos + 1)
 						if (prob_name in config.modes)
 							config.probabilities[prob_name] = text2num(prob_value)
+							log_misc("Probability of [prob_name] is [prob_value].")
 						else
 							log_misc("Unknown game mode probability configuration definition: [prob_name].")
 					else
@@ -562,10 +575,14 @@ var/list/gamemode_cache = list()
 				if("humans_need_surnames")
 					humans_need_surnames = 1
 
-				if("usealienwhitelist")
+				//if("usealienwhitelist")
+				//	usealienwhitelist = 1
+				if("useingamealienwhitelist")
 					usealienwhitelist = 1
-				if("usealienwhitelist_sql") // above need to be enabled as well
-					usealienwhitelistSQL = 1;
+					useingamealienwhitelist = 1
+				//if("usealienwhitelist_sql") // above need to be enabled as well
+				//	usealienwhitelist = 1
+				//	usealienwhitelistSQL = 1;
 				if("alien_player_ratio")
 					limitalienplayers = 1
 					alien_to_human_ratio = text2num(value)
@@ -593,6 +610,12 @@ var/list/gamemode_cache = list()
 
 				if("ban_comms_password")
 					config.ban_comms_password = value
+
+				if("webhook_address")
+					config.webhook_address = value
+
+				if("webhook_key")
+					config.webhook_key = value
 
 				if("login_export_addr")
 					config.login_export_addr = value
@@ -677,6 +700,12 @@ var/list/gamemode_cache = list()
 
 				if("aggressive_changelog")
 					config.aggressive_changelog = 1
+
+				if("panic_bunker")
+					config.panic_bunker = 1
+
+				if("eams")
+					config.eams = 1
 
 				if("delist_when_no_admins")
 					config.delist_when_no_admins = TRUE

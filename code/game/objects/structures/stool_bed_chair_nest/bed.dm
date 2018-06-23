@@ -138,6 +138,19 @@
 	else
 		..()
 
+/obj/structure/bed/Move()
+	. = ..()
+	if(buckled_mob)
+		buckled_mob.forceMove(src.loc)
+
+/obj/structure/bed/forceMove()
+	. = ..()
+	if(buckled_mob)
+		if(isturf(src.loc))
+			buckled_mob.forceMove(src.loc)
+		else
+			unbuckle_mob()
+
 /obj/structure/bed/proc/remove_padding()
 	if(padding_material)
 		padding_material.place_sheet(get_turf(src))
@@ -200,8 +213,7 @@
 		else
 			visible_message("[user] collapses \the [src.name].")
 			new/obj/item/roller(get_turf(src))
-			spawn(0)
-				qdel(src)
+			QDEL_IN(src, 0)
 		return
 	..()
 
@@ -254,14 +266,6 @@
 	qdel(held)
 	held = null
 
-
-/obj/structure/bed/roller/proc/move_buckled()
-	if(buckled_mob)
-		if(buckled_mob.buckled == src)
-			buckled_mob.forceMove(src.loc)
-		else
-			buckled_mob = null
-
 /obj/structure/bed/roller/post_buckle_mob(mob/living/M as mob)
 	if(M == buckled_mob)
 		set_density(1)
@@ -272,15 +276,6 @@
 
 	return ..()
 
-/obj/structure/bed/roller/buckle_mob()
-	. = ..()
-	if(.)
-		GLOB.moved_event.register(src, src, /obj/structure/bed/roller/proc/move_buckled)
-
-/obj/structure/bed/roller/unbuckle_mob()
-	GLOB.moved_event.unregister(src, src)
-	return ..()
-
 /obj/structure/bed/roller/MouseDrop(over_object, src_location, over_location)
 	..()
 	if((over_object == usr && (in_range(src, usr) || usr.contents.Find(src))))
@@ -288,6 +283,5 @@
 		if(buckled_mob)	return 0
 		visible_message("[usr] collapses \the [src.name].")
 		new/obj/item/roller(get_turf(src))
-		spawn(0)
-			qdel(src)
+		QDEL_IN(src, 0)
 		return

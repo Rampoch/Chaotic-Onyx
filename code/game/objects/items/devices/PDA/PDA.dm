@@ -60,6 +60,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	var/obj/item/weapon/card/id/id = null //Making it possible to slot an ID card into the PDA so it can function as both.
 	var/ownjob = null //related to above - this is assignment (potentially alt title)
 	var/ownrank = null // this one is rank, never alt title
+	var/pen = /obj/item/weapon/pen //determines what kind of pen spawns in a PDA
 
 	var/obj/item/device/paicard/pai = null	// A slot for a personal AI device
 
@@ -120,6 +121,9 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	default_cartridge = /obj/item/weapon/cartridge/head
 	icon_state = "pda-h"
 	news_silent = 1
+
+/obj/item/device/pda/heads/paperpusher
+	pen = /obj/item/weapon/pen/fancy
 
 /obj/item/device/pda/heads/hop
 	default_cartridge = /obj/item/weapon/cartridge/hop
@@ -322,7 +326,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	PDAs = sortAtom(PDAs)
 	if(default_cartridge)
 		cartridge = new default_cartridge(src)
-	new /obj/item/weapon/pen(src)
+	new pen(src)
 
 /obj/item/device/pda/proc/can_use()
 
@@ -674,13 +678,13 @@ var/global/list/obj/item/device/pda/PDAs = list()
 //MESSENGER/NOTE FUNCTIONS===================================
 
 		if ("Edit")
-			var/n = input(U, "Please enter message", name, notehtml) as message
+			var/n = input_cp1251(U, "Please enter message", html_decode(name), notehtml)
 			if (in_range(src, U) && loc == U)
-				n = sanitizeSafe(n, extra = 0)
 				if (mode == 1)
-					note = rustoutf(html_decode(n))
-					notehtml = note
+					n = sanitize(n)
+					note = rustoutf(rhtml_decode(n))
 					note = replacetext(note, "\n", "<br>")
+					notehtml = n
 			else
 				ui.close()
 		if("Toggle Messenger")
@@ -968,11 +972,11 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		return
 	if(tap)
 		U.visible_message("<span class='notice'>\The [U] taps on \his PDA's screen.</span>")
-	var/t = input(U, "Please enter message", P.name, tempmessage[P]) as text
-	t = sanitize(t)
+	var/message = input(U, "Please enter message", P.name, tempmessage[P]) as text
+	message = sanitizeSafe(message, extra = 0)
 	//t = readd_quotes(t)
-	t = replace_characters(t, list("&#34;" = "\""))
-	if (!t)
+	message = replace_characters(message, list("&#34;" = "\""))
+	if (!message)
 		return
 	if (!in_range(src, U) && loc != U)
 		return
@@ -988,34 +992,35 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 	last_text = world.time
 	tempmessage.Remove(P)
-	var/datum/reception/reception = get_reception(src, P, t)
-	t = cp1251_to_utf8(reception.message)
+	var/datum/reception/reception = get_reception(src, P, message)
 	if(!get_message_server(z))
 		to_chat(U, "<span class='notice'>ERROR: Messaging server is not responding.</span>")
-		tempmessage[P] = t
+		tempmessage[P] = message
 		return
 	if(!get_message_server(P.z))
 		to_chat(U, "<span class='notice'>ERROR: Receiving messaging server is not responding.</span>")
-		tempmessage[P] = t
+		tempmessage[P] = message
 		return
 	if(reception.telecomms_reception & TELECOMMS_RECEPTION_SENDER) // only send the message if it's stable
 		if(reception.telecomms_reception & TELECOMMS_RECEPTION_RECEIVER == 0) // Does our recipient have a broadcaster on their level?
 			to_chat(U, "ERROR: Cannot reach recipient.")
-			tempmessage[P] = t
+			tempmessage[P] = message
 			return
-		var/send_result = reception.message_server.send_pda_message("[P.owner]","[owner]","[t]")
+		var/send_result = reception.message_server.send_pda_message("[P.owner]","[owner]","[message]")
 		if (send_result)
 			to_chat(U, "ERROR: Messaging server rejected your message. Reason: contains '[send_result]'.")
-			tempmessage[P] = t
+			tempmessage[P] = message
 			return
 
-		tnote.Add(list(list("sent" = 1, "owner" = "[P.owner]", "job" = "[P.ownjob]", "message" = "[t]", "timestamp" = stationtime2text(), "target" = "\ref[P]")))
-		P.tnote.Add(list(list("sent" = 0, "owner" = "[owner]", "job" = "[ownjob]", "message" = "[t]", "timestamp" = stationtime2text(), "target" = "\ref[src]")))
+		var/utf_message = rustoutf(html_decode(message))
+		tnote.Add(list(list("sent" = 1, "owner" = "[P.owner]", "job" = "[P.ownjob]", "message" = "[utf_message]", "timestamp" = stationtime2text(), "target" = "\ref[P]")))
+		P.tnote.Add(list(list("sent" = 0, "owner" = "[owner]", "job" = "[ownjob]", "message" = "[utf_message]", "timestamp" = stationtime2text(), "target" = "\ref[src]")))
+
 		for(var/mob/M in GLOB.player_list)
 			if(M.stat == DEAD && M.get_preference_value(/datum/client_preference/ghost_ears) == GLOB.PREF_ALL_SPEECH) // src.client is so that ghosts don't have to listen to mice
 				if(istype(M, /mob/new_player))
 					continue
-				M.show_message("<span class='game say'>PDA Message - <span class='name'>[owner]</span> -> <span class='name'>[P.owner]</span>: <span class='message'>[russian_to_cp1251(t)]</span></span>")
+				M.show_message("<span class='game say'>PDA Message - <span class='name'>[owner]</span> -> <span class='name'>[P.owner]</span>: <span class='message'>[message]</span></span>")
 
 		if(!conversations.Find("\ref[P]"))
 			conversations.Add("\ref[P]")
@@ -1030,9 +1035,9 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			for(var/mob/living/silicon/ai/ai in GLOB.silicon_mob_list)
 				// Allows other AIs to intercept the message but the AI won't intercept their own message.
 				if(ai.aiPDA != P && ai.aiPDA != src)
-					ai.show_message("<i>Intercepted message from <b>[who]</b>: [t]</i>")
+					ai.show_message("<i>Intercepted message from <b>[who]</b>: [message]</i>")
 
-		P.new_message_from_pda(src, t)
+		P.new_message_from_pda(src, message)
 		GLOB.nanomanager.update_user_uis(U, src) // Update the sending user's PDA UI so that they can see the new message
 
 /obj/item/device/pda/proc/new_info(var/beep_silent, var/message_tone, var/reception_message)
@@ -1067,7 +1072,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	new_message(sending_device, sending_device.owner, sending_device.ownjob, message)
 
 /obj/item/device/pda/proc/new_message(var/sending_unit, var/sender, var/sender_job, var/message)
-	var/reception_message = "\icon[src] <b>Message from [sender] ([sender_job]), </b>\"[utf8_to_cp1251(message)]\" (<a href='byond://?src=\ref[src];choice=Message;skiprefresh=1;target=\ref[sending_unit]'>Reply</a>)"
+	var/reception_message = "\icon[src] <b>Message from [sender] ([sender_job]), </b>\"[message]\" (<a href='byond://?src=\ref[src];choice=Message;skiprefresh=1;target=\ref[sending_unit]'>Reply</a>)"
 	new_info(message_silent, ttone, reception_message)
 
 	log_pda("[usr] (PDA: [sending_unit]) sent \"[message]\" to [name]")

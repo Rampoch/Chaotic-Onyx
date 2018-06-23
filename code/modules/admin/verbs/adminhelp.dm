@@ -73,6 +73,11 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 		to_chat(src, "<font color='red'>Error: Admin-PM: You cannot send adminhelps (Muted).</font>")
 		return
 
+	if(src.mob)
+		if(jobban_isbanned(src.mob, "AHELP"))
+			src << "<span class='danger'>You have been banned from Adminhelp.</span>"
+			return
+
 	adminhelped = 1 //Determines if they get the message to reply by clicking the name.
 
 
@@ -139,6 +144,8 @@ var/list/adminhelp_ignored_words = list("unknown","the","a","an","of","monkey","
 		adminmsg2adminirc(src, null, "[html_decode(original_msg)] - !![admin_number_afk ? "All admins AFK ([admin_number_afk])" : "No admins online"]!!")
 	else
 		adminmsg2adminirc(src, null, "[html_decode(original_msg)]")
+
+	webhook_send_ahelp(src.ckey, original_msg + " - heard by [admin_number_present] non-AFK admins.")
 
 	feedback_add_details("admin_verb","AH") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	return

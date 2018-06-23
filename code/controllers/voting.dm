@@ -132,7 +132,7 @@ datum/controller/vote
 		var/third = list()
 		for(var/option in choices)
 			if(choices[option] == greatest_votes && greatest_votes)
-				first = utf8_to_cp1251(option)
+				first += utf8_to_cp1251(option)
 			else if(choices[option] == second_greatest_votes && second_greatest_votes)
 				second += utf8_to_cp1251(option)
 			else if(choices[option] == third_greatest_votes && third_greatest_votes)
@@ -205,8 +205,8 @@ datum/controller/vote
 							restart = 1
 						else
 							master_mode = .[1]
-					secondary_mode = .[2]
-					tertiary_mode = .[3]
+					//secondary_mode = .[2]
+					//tertiary_mode = .[3]
 				if("crew_transfer")
 					if(.[1] == "Initiate Crew Transfer")
 						init_autotransfer()
@@ -246,8 +246,8 @@ datum/controller/vote
 											autotransfer()
 				if("map")
 					var/datum/map/M = GLOB.all_maps[.[1]]
-					fdel("use_map")
-					text2file(M.path, "use_map")
+					fdel("data/use_map")
+					text2file("[M.type]", "data/use_map")
 
 		if(mode == "gamemode") //fire this even if the vote fails.
 			if(!round_progressing)

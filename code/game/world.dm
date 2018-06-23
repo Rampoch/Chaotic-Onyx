@@ -74,11 +74,13 @@
 	var/date_string = time2text(world.realtime, "YYYY/MM-Month/DD-Day")
 	href_logfile = file("data/logs/[date_string] hrefs.htm")
 	diary = file("data/logs/[date_string].log")
-	diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
+	diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time_stamp()][log_end]\n---------------------[log_end]"
 	changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
 
 	if(byond_version < RECOMMENDED_VERSION)
 		world.log << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND"
+
+	load_configuration()
 
 	if(config && config.server_name != null && config.server_suffix && world.port > 0)
 		// dumb and hardcoded but I don't care~
@@ -125,14 +127,18 @@
 	spawn(1)
 		initialize_unit_tests()
 #endif
+	
+	webhook_send_roundstatus("lobby")
 
 #undef RECOMMENDED_VERSION
 
-var/world_topic_spam_protect_ip = "0.0.0.0"
 var/world_topic_spam_protect_time = world.timeofday
 
 /world/Topic(T, addr, master, key)
 	diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key][log_end]"
+
+	var/input[] = params2list(T)
+	var/key_valid = config.comms_password && input["key"] == config.comms_password
 
 	if (T == "ping")
 		var/x = 1
@@ -148,7 +154,6 @@ var/world_topic_spam_protect_time = world.timeofday
 		return n
 
 	else if (copytext(T,1,7) == "status")
-		var/input[] = params2list(T)
 		var/list/s = list()
 		s["version"] = game_version
 		s["mode"] = PUBLIC_GAME_MODE
@@ -220,16 +225,13 @@ var/world_topic_spam_protect_time = world.timeofday
 		return list2params(L)
 
 	else if(copytext(T,1,5) == "laws")
-		var/input[] = params2list(T)
 		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 
 			return "Bad Key"
 
@@ -270,16 +272,13 @@ var/world_topic_spam_protect_time = world.timeofday
 			return list2params(ret)
 
 	else if(copytext(T,1,5) == "info")
-		var/input[] = params2list(T)
 		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 
 			return "Bad Key"
 
@@ -327,32 +326,62 @@ var/world_topic_spam_protect_time = world.timeofday
 				ret[M.key] = M.name
 			return list2params(ret)
 
-	else if(copytext(T,1,9) == "adminmsg")
-		/*
-			We got an adminmsg from IRC bot lets split the input then validate the input.
-			expected output:
-				1. adminmsg = ckey of person the message is to
-				2. msg = contents of message, parems2list requires
-				3. validatationkey = the key the bot has, it should match the gameservers commspassword in it's configuration.
-				4. sender = the ircnick that send the message.
-		*/
+	else if("who" in input)
+		var/result = "Current players:\n"
+		var/num = 0
+		for(var/client/C in GLOB.clients)
+			if(C.holder)
+				if(C.is_stealthed() && !key_valid)
+					continue
+			result += "\t [C]\n"
+			num++
+		result += "Total players: [num]"
+		return result
 
+	else if("adminwho" in input)
+		var/result = "Current admins:\n"
+		for(var/client/C in GLOB.clients)
+			if(C.holder)
+				if(!C.is_stealthed())
+					result += "\t [C], [C.holder.rank]\n"
+		return result
 
-		var/input[] = params2list(T)
-		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
-
+	else if ("ooc" in input)
+		if(!key_valid)
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
+			return "Bad Key"
+		var/ckey = input["ckey"]
+		var/message = input["ooc"]
+		if(!ckey||!message)
+			return
+		if(!config.vars["ooc_allowed"]&&!input["isadmin"])
+			return "globally muted"
+		var/sent_message = "[create_text_tag("DISCORD OOC:")] <EM>[ckey]:</EM> <span class='message'>[message]</span>"
+		for(var/client/target in GLOB.clients)
+			if(!target)
+				continue //sanity
+			if(target.is_key_ignored(ckey) || target.get_preference_value(/datum/client_preference/show_ooc) == GLOB.PREF_HIDE || target.get_preference_value(/datum/client_preference/show_discord_ooc) == GLOB.PREF_HIDE  && !input["isadmin"]) // If we're ignored by this person, then do nothing.
+				continue //if it shouldn't see then it doesn't
+			to_chat(target, "<span class='ooc'><span class='everyone'>[russian_to_cp1251(sent_message)]</span></span>")
 
+	else if ("asay" in input)
+		return "not supported" //simply no asay on bay
+
+	else if("adminhelp" in input)
+		if(!key_valid)
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
+			world_topic_spam_protect_time = world.time
 			return "Bad Key"
 
 		var/client/C
-		var/req_ckey = ckey(input["adminmsg"])
+		var/req_ckey = ckey(input["ckey"])
 
 		for(var/client/K in GLOB.clients)
 			if(K.ckey == req_ckey)
@@ -361,17 +390,11 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(!C)
 			return "No client with that name on server"
 
-		var/rank = input["rank"]
-		if(!rank)
-			rank = "Admin"
-		if(rank == "Unknown")
-			rank = "Staff"
+		var/rank = "Discord Admin"
 
-		var/message =	"<font color='red'>[rank] PM from <b><a href='?irc_msg=[input["sender"]]'>[input["sender"]]</a></b>: [input["msg"]]</font>"
-		var/amessage =  "<font color='blue'>[rank] PM from <a href='?irc_msg=[input["sender"]]'>[input["sender"]]</a> to <b>[key_name(C)]</b> : [input["msg"]]</font>"
-
-		C.received_irc_pm = world.time
-		C.irc_admin = input["sender"]
+		var/message =	"<font color='red'>[rank] PM from <b>[input["admin"]]</b>: [russian_to_cp1251(input["response"])]</font>"
+		var/amessage =  "<font color='blue'>[rank] PM from [input["admin"]] to <b>[key_name(C)]</b> : [russian_to_cp1251(input["response"])]</font>"
+		webhook_send_ahelp("[input["admin"]] -> [req_ckey]", russian_to_cp1251(input["response"]))
 
 		sound_to(C, 'sound/effects/adminhelp.ogg')
 		to_chat(C, message)
@@ -381,6 +404,22 @@ var/world_topic_spam_protect_time = world.timeofday
 				to_chat(A, amessage)
 		return "Message Successful"
 
+	else if("OOC" in input)
+		if(!key_valid)
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
+			world_topic_spam_protect_time = world.time
+			return "Bad Key"
+		config.ooc_allowed = !(config.ooc_allowed)
+		if (config.ooc_allowed)
+			to_world("<B>The OOC channel has been globally enabled!</B>")
+		else
+			to_world("<B>The OOC channel has been globally disabled!</B>")
+		log_and_message_admins("discord toggled OOC.")
+		return config.ooc_allowed ? "ON" : "OFF"
+
 	else if(copytext(T,1,6) == "notes")
 		/*
 			We got a request for notes from the IRC Bot
@@ -388,30 +427,25 @@ var/world_topic_spam_protect_time = world.timeofday
 				1. notes = ckey of person the notes lookup is for
 				2. validationkey = the key the bot has, it should match the gameservers commspassword in it's configuration.
 		*/
-		var/input[] = params2list(T)
 		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 			return "Bad Key"
 
 		return show_player_info_irc(ckey(input["notes"]))
 
 	else if(copytext(T,1,4) == "age")
-		var/input[] = params2list(T)
 		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 			return "Bad Key"
 
 		var/age = get_player_age(input["age"])
@@ -424,17 +458,15 @@ var/world_topic_spam_protect_time = world.timeofday
 			return "Database connection failed or not set up"
 
 	else if(copytext(T,1,14) == "placepermaban")
-		var/input[] = params2list(T)
 		if(!config.ban_comms_password)
 			return "Not enabled"
 		if(input["bankey"] != config.ban_comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 			return "Bad Key"
 
 		var/target = ckey(input["target"])
@@ -456,15 +488,13 @@ var/world_topic_spam_protect_time = world.timeofday
 		qdel(C)
 
 	else if(copytext(T,1,19) == "prometheus_metrics")
-		var/input[] = params2list(T)
 		if(input["key"] != config.comms_password)
-			if(world_topic_spam_protect_ip == addr && abs(world_topic_spam_protect_time - world.time) < 50)
-				spawn(50)
-					world_topic_spam_protect_time = world.time
-					return "Bad Key (Throttled)"
+			if(abs(world_topic_spam_protect_time - world.time) < 50)
+				sleep(50)
+				world_topic_spam_protect_time = world.time
+				return "Bad Key (Throttled)"
 
 			world_topic_spam_protect_time = world.time
-			world_topic_spam_protect_ip = addr
 			return "Bad Key"
 
 		if(!GLOB || !GLOB.prometheus_metrics)
@@ -496,20 +526,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	callHook("shutdown")
 	return ..()
 
-/hook/startup/proc/loadMode()
-	world.load_mode()
-	return 1
-
-/world/proc/load_mode()
-	if(!fexists("data/mode.txt"))
-		return
-
-	var/list/Lines = file2list("data/mode.txt")
-	if(Lines.len)
-		if(Lines[1])
-			master_mode = Lines[1]
-			log_misc("Saved mode is '[master_mode]'")
-
 /world/proc/save_mode(var/the_mode)
 	var/F = file("data/mode.txt")
 	fdel(F)
@@ -525,6 +541,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /proc/load_configuration()
 	config = new /datum/configuration()
+	config.initialize()
 	config.load("config/config.txt")
 	config.load("config/game_options.txt","game_options")
 	config.loadsql("config/dbconfig.txt")
@@ -580,15 +597,15 @@ var/world_topic_spam_protect_time = world.timeofday
 	var/s = ""
 
 	if (config && config.server_name)
-		s += "<b>[config.server_name]</b> &#8212; "
+		s += "<b>[config.server_name]</b>"
 
-	s += "<b>[station_name()]</b>";
-	s += " ("
-	s += "<a href=\"http://\">" //Change this to wherever you want the hub to link to.
+//	s += "<b>[station_name()]</b>";
+//	s += " ("
+//	s += "<a href=\"http://\">" //Change this to wherever you want the hub to link to.
 //	s += "[game_version]"
-	s += "Default"  //Replace this with something else. Or ever better, delete it and uncomment the game version.
-	s += "</a>"
-	s += ")"
+//	s += "Default"  //Replace this with something else. Or ever better, delete it and uncomment the game version.
+//	s += "</a>"
+//	s += ")"
 
 	var/list/features = list()
 

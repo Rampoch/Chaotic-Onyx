@@ -43,7 +43,7 @@
 		to_chat(user, "You set about modifying the helmet into [src].")
 		var/mob/living/carbon/human/H = user
 		if(istype(H))
-			species_restricted = list(H.species.get_bodytype(H))
+			species_restricted = list(H.species.name)
 		kit.use(1,user)
 		return 1
 	return ..()
@@ -62,7 +62,7 @@
 		to_chat(user, "You set about modifying the suit into [src].")
 		var/mob/living/carbon/human/H = user
 		if(istype(H))
-			species_restricted = list(H.species.get_bodytype(H))
+			species_restricted = list(H.name)
 		kit.use(1,user)
 		return 1
 	return ..()
@@ -136,6 +136,16 @@
 	new_name = "APLU \"Burning Chrome\""
 	new_desc = "A standard APLU exosuit with stylish blue flame decals."
 	new_icon = "ripley_flames_blue"
+
+/obj/item/device/kit/paint/ripley/random
+	name = "quantum ripley kit"
+
+/obj/item/device/kit/paint/ripley/random/New()
+	..()
+	var/list/ripleys = typesof(/obj/item/device/kit/paint/ripley)
+	var/build_path = pick(ripleys)
+	new build_path(src.loc)
+	qdel(src)
 
 // Durand kits.
 /obj/item/device/kit/paint/durand

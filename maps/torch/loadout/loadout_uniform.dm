@@ -6,13 +6,7 @@
 /datum/gear/uniform/jumpsuit
 	allowed_roles = NON_MILITARY_ROLES
 
-/datum/gear/uniform/jumpsuit_f
-	allowed_roles = NON_MILITARY_ROLES
-
 /datum/gear/uniform/shortjumpskirt
-	allowed_roles = RESTRICTED_ROLES
-
-/datum/gear/uniform/blackjumpshorts
 	allowed_roles = RESTRICTED_ROLES
 
 /datum/gear/uniform/roboticist_skirt
@@ -51,9 +45,6 @@
 /datum/gear/uniform/formal_pants/custom
 	allowed_roles = FORMAL_ROLES
 
-/datum/gear/uniform/formal_pants/baggycustom
-	allowed_roles = FORMAL_ROLES
-
 /datum/gear/uniform/shorts
 	allowed_roles = RESTRICTED_ROLES
 
@@ -69,7 +60,7 @@
 /datum/gear/uniform/corporate
 	allowed_roles = list(/datum/job/scientist, /datum/job/mining, /datum/job/guard, /datum/job/scientist_assistant,
 						/datum/job/scientist_assistant, /datum/job/engineer_contractor, /datum/job/roboticist, /datum/job/doctor_contractor,
-						/datum/job/psychiatrist, /datum/job/cargo_contractor, /datum/job/bartender, /datum/job/merchant, /datum/job/assistant)
+						/datum/job/psychiatrist, /datum/job/cargo_contractor, /datum/job/bartender, /datum/job/detective, /datum/job/merchant, /datum/job/assistant)
 
 /datum/gear/uniform/sterile
 	allowed_roles = MEDICAL_ROLES

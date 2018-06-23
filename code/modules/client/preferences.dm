@@ -108,7 +108,6 @@ datum/preferences
 
 	if(!get_mob_by_key(client_ckey))
 		to_chat(user, "<span class='danger'>No mob exists for the given client!</span>")
-		close_load_dialog(user)
 		return
 
 	var/dat = "<html><body><center>"
@@ -194,7 +193,10 @@ datum/preferences
 
 	character.fully_replace_character_name(real_name)
 
+	var/datum/species/S = all_species[species]
+
 	character.gender = gender
+	character.body_build = S.get_body_build(gender, body)
 	character.age = age
 	character.b_type = b_type
 

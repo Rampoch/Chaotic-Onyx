@@ -345,8 +345,36 @@
 						                -Nodrak
 	************************************WARNING!***********************************/
 		var/counter = 0
+
+		jobs += "<table cellpadding='1' cellspacing='5' width='100%'>"
+
+		jobs += "<tr>"
+
+		jobs += "<td rowspan='2' align='center' width=80px style='border-right: 1px;'><b>Misc Bans</b></td>"
+		jobs += "<td>"
+
+		// Chats (by Error_777)
+		jobs +={"
+			<A href='?_src_=holder;jobban3=OOC;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "OOC"))?"red":"blue"]>OOC</font></A> |
+			<A href='?_src_=holder;jobban3=LOOC;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "LOOC"))?"red":"blue"]>LOOC</font></A> |
+			<A href='?_src_=holder;jobban3=AHELP;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "AHELP"))?"red":"blue"]>AHelp</font></A>"}
+			
+		jobs += "</td>"
+
+		jobs += "</tr>"
+
+		// Species
+		jobs += "<tr>"
+		jobs += "<td><A href='?_src_=holder;jobban3=SPECIES;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "SPECIES"))?"red":"blue"]>Species</font></A></td>"
+		jobs += "</tr>"
+
+		jobs += "</table>"
+
+//
 //Regular jobs
-	//Command (Blue)
+//
+
+		//Command(Blue)
 		jobs += "<table cellpadding='1' cellspacing='0' width='100%'>"
 		jobs += "<tr align='center' bgcolor='ccccff'><th colspan='[length(GLOB.command_positions)]'><a href='?src=\ref[src];jobban3=commanddept;jobban4=\ref[M]'>Command Positions</a></th></tr><tr align='center'>"
 		for(var/jobPos in GLOB.command_positions)
@@ -1982,6 +2010,9 @@
 				show_player_panel(M)
 			if("No")
 				return
+
+	EAMS_AdminTopicProcess(src, href_list)
+	SpeciesIngameWhitelist_AdminTopicProcess(src, href_list)
 
 
 mob/living/proc/can_centcom_reply()

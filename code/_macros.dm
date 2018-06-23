@@ -89,6 +89,16 @@
 
 #define isCrowbar(A) istype(A, /obj/item/weapon/crowbar)
 
+#define iscapacitor(A) istype(A, /obj/item/weapon/stock_parts/capacitor)
+
+#define ismicrolaser(A) istype(A, /obj/item/weapon/stock_parts/micro_laser)
+
+#define ismatterbin(A) istype(A, /obj/item/weapon/stock_parts/matter_bin)
+
+#define isscanner(A) istype(A, /obj/item/weapon/stock_parts/scanning_module)
+
+#define ismanipulator(A) istype(A, /obj/item/weapon/stock_parts/manipulator)
+
 #define sequential_id(key) uniqueness_repository.Generate(/datum/uniqueness_generator/id_sequential, key)
 
 #define random_id(key,min_id,max_id) uniqueness_repository.Generate(/datum/uniqueness_generator/id_random, key, min_id, max_id)
@@ -123,6 +133,8 @@
 #define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) } ; x = null }
 
 #define QDEL_NULL(x) if(x) { qdel(x) ; x = null }
+
+#define QDEL_IN(item, time) addtimer(CALLBACK(GLOBAL_PROC, .proc/qdel, item), time, TIMER_STOPPABLE)
 
 #define ARGS_DEBUG log_debug("[__FILE__] - [__LINE__]") ; for(var/arg in args) { log_debug("\t[log_info_line(arg)]") }
 

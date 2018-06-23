@@ -6,11 +6,6 @@
 	deform = 'icons/mob/human_races/r_def_lizard.dmi'
 	tail = "sogtail"
 	tail_animation = 'icons/mob/species/unathi/tail.dmi'
-	limb_blend = ICON_MULTIPLY
-	tail_blend = ICON_MULTIPLY
-
-	eye_icon = "eyes_lizard"
-	eye_icon_location = 'icons/mob/lizard_face.dmi'
 
 	unarmed_types = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/tail, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
 	primitive_form = "Stok"
@@ -35,6 +30,10 @@
 	else, frequently even their own lives. They prefer warmer temperatures than most species and \
 	their native tongue is a heavy hissing laungage called Sinta'Unathi."
 
+	body_builds = list(
+		new/datum/body_build/unathi
+	)
+
 	cold_level_1 = 280 //Default 260 - Lower is better
 	cold_level_2 = 220 //Default 200
 	cold_level_3 = 130 //Default 120
@@ -46,11 +45,12 @@
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
 	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR | HAS_EYE_COLOR
 
-	flesh_color = "#34af10"
+	flesh_color = "#333300"
 
 	reagent_tag = IS_UNATHI
 	base_color = "#066000"
 	blood_color = "#f24b2e"
+	organs_icon = 'icons/mob/human_races/organs/unathi.dmi'
 
 	move_trail = /obj/effect/decal/cleanable/blood/tracks/claw
 
@@ -69,16 +69,8 @@
 		)
 	breathing_sound = 'sound/voice/lizard.ogg'
 
-	inherent_verbs = list(
-		/mob/living/carbon/human/proc/diona_heal_toggle
-		)
-/*
-	equip_adjust = list(
-		slot_glasses_str =   list(NORTH = list("x" = 0, "y" = 2),   EAST = list("x" = 0, "y" = 2),   SOUTH = list("x" = 0, "y" = 2),   WEST = list("x" = 0, "y" = 2)),
-		slot_head_str =      list(NORTH = list("x" = 0, "y" = 2),   EAST = list("x" = 0, "y" = 2),   SOUTH = list("x" = 0, "y" = 2),   WEST = list("x" = 0, "y" = 2))
-			)
+	prone_overlay_offset = list(-4, -4)
 
-*/
 /datum/species/unathi/equip_survival_gear(var/mob/living/carbon/human/H)
 	..()
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H),slot_shoes)

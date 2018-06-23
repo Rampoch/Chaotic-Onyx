@@ -134,9 +134,7 @@ var/list/point_source_descriptions = list(
 	var/points_per_slip = 2
 	var/points_per_platinum = 5 // 5 points per sheet
 	var/points_per_phoron = 5
-//testing cash
-	var/points_per_tallers = 1
-/////////////
+	var/points_per_tallers = 0.5
 	var/point_sources = list()
 	var/pointstotalsum = 0
 	var/pointstotal = 0
@@ -185,9 +183,7 @@ var/list/point_source_descriptions = list(
 	proc/sell()
 		var/phoron_count = 0
 		var/plat_count = 0
-//test cash
 		var/tallers_count = 0
-//////////////////
 		for(var/area/subarea in shuttle.shuttle_area)
 			for(var/atom/movable/MA in subarea)
 				if(MA.anchored)	continue
@@ -216,11 +212,9 @@ var/list/point_source_descriptions = list(
 							switch(P.get_material_name())
 								if("phoron") phoron_count += P.get_amount()
 								if("platinum") plat_count += P.get_amount()
-//tallers test
 						if(istype(A, /obj/item/weapon/spacecash))
 							var/obj/item/weapon/spacecash/cash = A
 							tallers_count += cash.worth
-////////////////////////////////////////////
 				qdel(MA)
 		if(tallers_count)
 			var/temp = tallers_count * points_per_tallers

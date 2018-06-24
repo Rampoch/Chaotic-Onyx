@@ -9,6 +9,7 @@
 	max_storage_space = 4
 	var/mob/affecting = null
 	var/deity_name = "Christ"
+	var/heal_mode = 0
 
 /obj/item/weapon/storage/bible/booze
 	name = "bible"
@@ -34,3 +35,16 @@
 	if (src.use_sound)
 		playsound(src.loc, src.use_sound, 50, 1, -5)
 	return ..()
+
+/obj/item/weapon/storage/bible/attack(mob/living/M, mob/living/carbon/human/user)
+	if(heal_mode == 0)
+		return
+	else
+		if(user.a_intent != I_HURT)
+			M.rejuvenate()
+			heal_mode = 0
+			user.visible_message("<span class='danger'>\The [user] blessed [M]!</span>")
+	return
+
+
+

@@ -358,7 +358,7 @@
 			<A href='?_src_=holder;jobban3=OOC;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "OOC"))?"red":"blue"]>OOC</font></A> |
 			<A href='?_src_=holder;jobban3=LOOC;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "LOOC"))?"red":"blue"]>LOOC</font></A> |
 			<A href='?_src_=holder;jobban3=AHELP;jobban4=\ref[M]'><font color=[(jobban_isbanned(M, "AHELP"))?"red":"blue"]>AHelp</font></A>"}
-			
+
 		jobs += "</td>"
 
 		jobs += "</tr>"
@@ -1404,6 +1404,15 @@
 		feedback_inc("admin_cookies_spawned",1)
 		to_chat(H, "<span class='notice'>Your prayers have been answered!! You received the <b>best cookie</b>!</span>")
 
+	else if(href_list["admingivespell"])
+		if(!check_rights(R_ADMIN|R_FUN))	return
+		var/mob/living/carbon/human/H = locate(href_list["admingivespell"])
+
+		for (var/obj/item/weapon/storage/bible/B in H)
+			B.heal_mode = 1
+		log_admin("[key_name(H)] received a blessing by [key_name(src.owner)]")
+		message_admins("[key_name(H)] received a blessing by [key_name(src.owner)]")
+		to_chat(H, "<span class='notice'>Your prayers have been answered!! You received the <b>miracle</b>!</span>")
 	else if(href_list["BlueSpaceArtillery"])
 		if(!check_rights(R_ADMIN|R_FUN))	return
 

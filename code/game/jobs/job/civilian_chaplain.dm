@@ -12,6 +12,7 @@
 	minimal_access = list(access_morgue, access_chapel_office, access_crematorium)
 	alt_titles = list("Counselor")
 	outfit_type = /decl/hierarchy/outfit/job/chaplain
+	var/obj/item/weapon/storage/bible/B = null
 
 	equip(var/mob/living/carbon/human/H, var/alt_title, var/ask_questions = TRUE)
 		. = ..()
@@ -20,7 +21,7 @@
 		if(!ask_questions)
 			return
 
-		var/obj/item/weapon/storage/bible/B = locate(/obj/item/weapon/storage/bible) in H
+		B = locate(/obj/item/weapon/storage/bible) in H
 		if(!B)
 			return
 

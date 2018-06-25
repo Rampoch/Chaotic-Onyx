@@ -6,7 +6,7 @@
 	icon_state = ""
 	obj_flags = OBJ_FLAG_CONDUCTIBLE
 	w_class = ITEM_SIZE_SMALL
-	origin_tech = list(TECH_MATERIAL = 1, TECH_BIO = 1)
+	origin_tech = list(TECH_MAGNET = 4, TECH_ILLEGAL = 2, TECH_DATA = 4)
 
 
 /obj/item/weapon/Nullifier/attack(mob/target as mob, mob/living/user as mob)

@@ -10,16 +10,12 @@
 
 
 /obj/item/weapon/Nullifier/attack(mob/target as mob, mob/living/user as mob)
-//	var/message
 	if(istype(target, /mob/living/carbon/human))
-//		if(id)
-//		message = "ID card detected. Nullification is performed."
 		var/id = target.GetIdCard()
 		if(id)
 			to_chat(user, "<span class='notice'>ID card detected. Nullification is performed.</span>")
 			test(id)
 		else
-//		message = "No ID card detected."
 			to_chat(user, "<span class='notice'>No ID card detected.</span>")
 			return
 	else

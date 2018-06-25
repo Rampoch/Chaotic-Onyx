@@ -7,8 +7,8 @@
 		var/datum/disease2/effect/E = T
 		if(E in exclude)
 			continue
-		if(initial(E.badness) > badness)	//we don't want such strong effects
-			continue
+//		if(initial(E.badness) > badness)	//we don't want such strong effects
+//			continue
 		if(initial(E.stage) <= stage)
 			candidates += T
 	var/type = pick(candidates)

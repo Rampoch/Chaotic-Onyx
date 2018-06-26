@@ -10,3 +10,8 @@
 	w_class = ITEM_SIZE_HUGE
 	max_w_class = ITEM_SIZE_NORMAL
 	max_storage_space = DEFAULT_BACKPACK_STORAGE
+
+/obj/item/weapon/storage/briefcase/IAA
+	startswith = list(
+	/obj/item/weapon/Nullifier
+	)

@@ -14,7 +14,15 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/geneticpoints = 25
 	var/purchasedpowers = list()
 	var/mimicing = ""
-
+	var/lingabsorbedcount = 1
+	var/cloaked = 0
+	var/armor_deployed = 0 //This is only used for changeling_generic_equip_all_slots() at the moment.
+	var/recursive_enhancement = 0 //Used to power up other abilities from the ling power with the same name.
+	var/list/purchased_powers_history = list() //Used for round-end report, includes respec uses too.
+	var/last_shriek = null // world.time when the ling last used a shriek.
+	var/next_escape = 0	// world.time when the ling can next use Escape Restraints
+	var/readapts = 1
+	var/max_readapts = 2
 
 /datum/changeling/New()
 	..()

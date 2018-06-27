@@ -137,7 +137,7 @@ var/list/point_source_descriptions = list(
 	var/point_sources = list()
 	var/pointstotalsum = 0
 	var/pointstotal = 0
-	var/points_per_tallers = 0.5
+	var/points_per_tallers = 0.1
 	//control
 	var/ordernum
 	var/list/shoppinglist = list()

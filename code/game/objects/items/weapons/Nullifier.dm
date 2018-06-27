@@ -31,9 +31,9 @@
 	if(!proximity) return
 	if(istype(O, /obj/item/weapon/card/id))
 		to_chat(user, "<span class='notice'>ID card detected. Nullification is performed.</span>")
-		test(O)
+		remove_access(O)
 
-/obj/item/weapon/Nullifier/proc/test(var/obj/item/weapon/card/id/id_card)
+/obj/item/weapon/Nullifier/proc/remove_access(var/obj/item/weapon/card/id/id_card)
 	id_card.access -= get_access_ids(ACCESS_TYPE_STATION|ACCESS_TYPE_CENTCOM)
 	id_card.assignment = "Terminated"
 	callHook("terminate_employee", list(id_card))

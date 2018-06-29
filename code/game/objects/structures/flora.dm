@@ -80,23 +80,21 @@
 	icon_state = "plant-26"
 	plane = ABOVE_HUMAN_PLANE
 	layer = ABOVE_HUMAN_LAYER
-	var/dead = 0
+	var/dead = FALSE
 
 /obj/structure/flora/pottedplant/proc/death()
 	if (!dead)
 		icon_state = "plant-dead"
 		name = "dead [name]"
 		desc = "This is the dried up remains of a dead plant. Someone should replace it."
-		dead = 1
+		dead = TRUE
 
 //No complex interactions, just make them fragile
 /obj/structure/flora/pottedplant/ex_act()
 	death()
-	return ..()
 
 /obj/structure/flora/pottedplant/fire_act()
 	death()
-	return ..()
 
 /obj/structure/flora/pottedplant/attackby(obj/item/weapon/W, mob/user)
 	if (W.edge)

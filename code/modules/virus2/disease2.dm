@@ -17,7 +17,7 @@ LEGACY_RECORD_STRUCTURE(virus_records, virus_record)
 	uniqueID = rand(0,10000)
 	..()
 
-/datum/disease2/disease/proc/makerandom(var/severity=2)
+/datum/disease2/disease/proc/makerandom(var/severity= rand(1,5) )
 	var/list/excludetypes = list()
 	for(var/i=1 ; i <= max_stage ; i++ )
 		var/datum/disease2/effect/E = get_random_virus2_effect(i, severity, excludetypes)

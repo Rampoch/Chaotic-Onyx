@@ -117,6 +117,7 @@ var/list/point_source_descriptions = list(
 	"phoron" = "From exported phoron",
 	"platinum" = "From exported platinum",
 	"virology" = "From uploaded antibody data",
+	"thaller" = "From transfer thallers",
 	"total" = "Total" // If you're adding additional point sources, add it here in a new line. Don't forget to put a comma after the old last line.
 	)
 
@@ -136,6 +137,7 @@ var/list/point_source_descriptions = list(
 	var/point_sources = list()
 	var/pointstotalsum = 0
 	var/pointstotal = 0
+	var/points_per_tallers = 0.1
 	//control
 	var/ordernum
 	var/list/shoppinglist = list()
@@ -181,6 +183,7 @@ var/list/point_source_descriptions = list(
 	proc/sell()
 		var/phoron_count = 0
 		var/plat_count = 0
+		var/tallers_count = 0
 		for(var/area/subarea in shuttle.shuttle_area)
 			for(var/atom/movable/MA in subarea)
 				if(MA.anchored)	continue
@@ -209,7 +212,14 @@ var/list/point_source_descriptions = list(
 							switch(P.get_material_name())
 								if("phoron") phoron_count += P.get_amount()
 								if("platinum") plat_count += P.get_amount()
+						if(istype(A, /obj/item/weapon/spacecash))
+							var/obj/item/weapon/spacecash/cash = A
+							tallers_count += cash.worth
 				qdel(MA)
+
+		if(tallers_count)
+			var/temp = tallers_count * points_per_tallers
+			add_points_from_source(temp, "thaller")
 
 		if(phoron_count)
 			var/temp = phoron_count * points_per_phoron

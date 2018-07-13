@@ -23,7 +23,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/next_escape = 0	// world.time when the ling can next use Escape Restraints
 	var/readapts = 1
 	var/max_readapts = 2
-	var/true_dead = 0
+	var/true_dead = FALSE
 
 /datum/changeling/New()
 	..()
@@ -452,7 +452,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/mob/living/carbon/C = src
 
 	if(C.mind.changeling.true_dead)
-		to_chat(C, "<span class='notice'>You can not do this. You really died.</span>")
+		to_chat(C, "<span class='notice'>We can not do this. We are really died.</span>")
 		return
 
 	if(!C.stat && alert("Are we sure we wish to fake our death?",,"Yes","No") == "No")//Confirmation for living changelings if they want to fake their death
@@ -482,7 +482,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/mob/living/carbon/C = src
 
 	if(C.mind.changeling.true_dead)
-		to_chat(C, "<span class='notice'>You can not do this. You really died.</span>")
+		to_chat(C, "<span class='notice'>We can not do this. We are really died.</span>")
 		return
 
 	// restore us to health
@@ -821,7 +821,9 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 	if(!T)	return 0
 	to_chat(T, "<span class='danger'>You feel a small prick and your chest becomes tight.</span>")
 	T.make_jittery(400)
-	if(T.reagents)	T.reagents.add_reagent(/datum/reagent/lexorin, 40)
+	if(T.reagents)
+		spawn(5)
+			T.reagents.add_reagent(/datum/reagent/toxin/cyanide, 3)
 	feedback_add_details("changeling_powers","DTHS")
 	return 1
 

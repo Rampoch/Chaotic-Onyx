@@ -452,7 +452,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/mob/living/carbon/C = src
 
 	if(C.mind.changeling.true_dead)
-		to_chat(C, "<span class='notice'>We can not do this. We are really died.</span>")
+		to_chat(C, "<span class='notice'>We can not do this. We are really dead.</span>")
 		return
 
 	if(!C.stat && alert("Are we sure we wish to fake our death?",,"Yes","No") == "No")//Confirmation for living changelings if they want to fake their death
@@ -482,7 +482,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/mob/living/carbon/C = src
 
 	if(C.mind.changeling.true_dead)
-		to_chat(C, "<span class='notice'>We can not do this. We are really died.</span>")
+		to_chat(C, "<span class='notice'>We can not do this. We are really dead.</span>")
 		return
 
 	// restore us to health

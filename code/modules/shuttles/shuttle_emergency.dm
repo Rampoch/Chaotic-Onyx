@@ -238,6 +238,9 @@
 		ui.set_auto_update(1)
 
 /obj/machinery/computer/shuttle_control/emergency/OnTopic(user, href_list)
+	if(..())
+		return 1
+
 	if(href_list["removeid"])
 		var/dna_hash = href_list["removeid"]
 		authorized -= dna_hash

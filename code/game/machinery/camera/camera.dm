@@ -239,7 +239,7 @@
 			if (istype(W, /obj/item)) //is it even possible to get into attackby() with non-items?
 				var/obj/item/I = W
 				if (I.hitsound)
-					playsound(loc, I.hitsound, 50, 1, -1)
+					playsound(src.loc, 'sound/weapons/smash.ogg', 50, 1, -1)
 		take_damage(W.force)
 
 	else

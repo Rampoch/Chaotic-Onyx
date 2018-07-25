@@ -116,7 +116,7 @@
 	if(B)
 		B.vital = 0
 	if(!Bio)
-		log_debug("changelling in spawn for organ", notify_admin = TRUE)
+		log_debug("[target] changelling in spawn for organ", notify_admin = TRUE)
 		var/new_organ = /obj/item/organ/internal/biostructure/
 		new new_organ(target)
 		for(var/obj/item/organ/internal/biostructure/Biol in target.internal_organs)

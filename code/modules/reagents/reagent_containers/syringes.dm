@@ -52,7 +52,7 @@
 /obj/item/weapon/reagent_containers/syringe/attackby(obj/item/I as obj, mob/user as mob)
 	return
 
-/obj/item/weapon/reagent_containers/syringe/do_surgery(mob/living/carbon/M, mob/living/user)
+/obj/item/weapon/reagent_containers/syringe/do_surgery(mob/living/carbon/M, mob/living/user, src)
 	if(user.a_intent == I_HURT)
 		return 0
 	if(user.a_intent != I_HELP) //in case it is ever used as a surgery tool
@@ -372,7 +372,7 @@
 /obj/item/weapon/reagent_containers/syringe/steroid
 	name = "Syringe (anabolic steroids)"
 	desc = "Contains drugs for muscle growth."
-	
+
 /obj/item/weapon/reagent_containers/syringe/steroid/New()
 	..()
 	reagents.add_reagent(/datum/reagent/adrenaline, 5)

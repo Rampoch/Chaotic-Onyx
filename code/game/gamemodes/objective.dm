@@ -802,14 +802,14 @@ datum/objective/heist/salvage
 
 /datum/objective/cult/survive/check_completion()
 	var/acolytes_survived = 0
-	if (!GLOB.cult)
+	if(!GLOB.cult)
 		return 0
 	var/area/shuttle = locate(/area/shuttle/escape/centcom)
-	for (var/datum/mind/cult_mind in GLOB.cult.current_antagonists)
-		if (cult_mind.current && cult_mind.current.stat!=2)
-			if (get_turf(cult_mind.current) in shuttle)
+	for(var/datum/mind/cult_mind in GLOB.cult.current_antagonists)
+		if(cult_mind.current && cult_mind.current.stat!=2)
+			if(get_turf(cult_mind.current) in shuttle)
 				acolytes_survived++
-	if (acolytes_survived >= target_amount)
+	if(acolytes_survived >= target_amount)
 		return 1
 	return 0
 

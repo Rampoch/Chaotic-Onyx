@@ -11,7 +11,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/changelingID = "Changeling"
 	var/geneticdamage = 0
 	var/isabsorbing = 0
-	var/geneticpoints = 25
+	var/geneticpoints = 15
 	var/purchasedpowers = list()
 	var/mimicing = ""
 	var/lingabsorbedcount = 1
@@ -819,7 +819,7 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 	to_chat(T, "<span class='danger'>You feel a small prick and your chest becomes tight.</span>")
 	T.make_jittery(400)
 	if(T.reagents)
-		spawn(5)
+		spawn(0.1 MINUTES)
 			T.reagents.add_reagent(/datum/reagent/toxin/cyanide, 3)
 	feedback_add_details("changeling_powers","DTHS")
 	return 1
@@ -1163,7 +1163,8 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 	visible_message("<span class='warning'>The flesh is torn around the [loc.name]\'s arm!</span>",
 		"<span class='warning'>The flesh of our hand is transformed.</span>",
 		"<span class='italics'>You hear organic matter ripping and tearing!</span>")
-	spawn(30)
+	spawn(0.1 MINUTES)
+		playsound(src, 'sound/effects/blobattack.ogg', 30, 1)
 		if(src.mind.changeling.recursive_enhancement)
 			if(changeling_generic_weapon(/obj/item/weapon/melee/changeling/arm_blade/greater))
 				to_chat(src, "<span class='notice'>We prepare an extra sharp blade.</span>")

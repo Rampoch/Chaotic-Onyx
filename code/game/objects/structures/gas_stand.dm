@@ -1,6 +1,3 @@
-#define TANK_MAX_RELEASE_PRESSURE (3*ONE_ATMOSPHERE)
-#define TANK_DEFAULT_RELEASE_PRESSURE ONE_ATMOSPHERE
-
 /obj/structure/gas_stand
 	name = "gas stand"
 	icon = 'icons/obj/gas_stand.dmi'

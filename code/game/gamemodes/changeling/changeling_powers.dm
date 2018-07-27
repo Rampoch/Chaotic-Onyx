@@ -71,7 +71,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 
 	var/mob/living/carbon/Z = src
 	if(istype(Z))
-		log_debug("[Z] changelling in make for organ", notify_admin = TRUE)
+		log_debug("[Z.name] changelling in make for organ", notify_admin = TRUE)
 		inserting_organ(Z,BP_CHEST)
 
 	if(!powerinstances.len)
@@ -322,7 +322,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 		H.set_species(newSpecies,1)
 		H.b_type = chosen_dna.dna.b_type
 		H.sync_organ_dna()
-		log_debug("[H] changelling in transform for organ", notify_admin = TRUE)
+		log_debug("[H.name] changelling in transform for organ", notify_admin = TRUE)
 		inserting_organ(H,BP_CHEST)
 	domutcheck(src, null)
 	src.UpdateAppearance()
@@ -352,7 +352,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	to_chat(H, "<span class='warning'>Our genes cry out!</span>")
 	H = H.monkeyize()
 	if(istype(H))
-		log_debug("[H] changelling in lesser for organ", notify_admin = TRUE)
+		log_debug("[H.name] changelling in lesser for organ", notify_admin = TRUE)
 		inserting_organ(H,BP_CHEST)
 
 	feedback_add_details("changeling_powers","LF")

@@ -380,6 +380,9 @@
 	if(!istype(G))
 		to_chat(src, "<span class='warning'>We must be grabbing a creature in our active hand to absorb them.</span>")
 		return
+	if(changeling.chem_charges <= 0)
+		to_chat(src, "<span class='warning'>We don't have enough DNA.</span>")
+		return
 
 	var/mob/living/carbon/human/T = G.affecting
 	var/obj/item/organ/internal/brain/B = T.internal_organs_by_name[BP_BRAIN]

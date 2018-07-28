@@ -240,16 +240,19 @@
 		return
 
 	if(!target)	return 0
-	to_chat(target,"<span class='danger'>Your muscles begin to painfully tighten.</span>")
+
 	if(target.isSynthetic())
 		return
-	target.Weaken(20)
-	src.visible_message("<span class='warning'>[src] tears a chunk from \the [target]'s flesh!</span>")
-	feedback_add_details("changeling_powers","PB")
 
 	if(last_special > world.time)
 		src << "<span class='warning'>We must wait a little while before we can use this ability again!</span>"
 		return
+
+	to_chat(target,"<span class='danger'>Your muscles begin to painfully tighten.</span>")
+
+	target.Weaken(20)
+	src.visible_message("<span class='warning'>[src] tears a chunk from \the [target]'s flesh!</span>")
+	feedback_add_details("changeling_powers","PB")
 
 	last_special = world.time + 100
 	return

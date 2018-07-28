@@ -392,19 +392,19 @@
 		return
 
 	if(T.species.species_flags & SPECIES_FLAG_NO_SCAN)
-		to_chat(src, "<span class='warning'>We cannot extract DNA from this creature!</span>")
+		to_chat(src, "<span class='warning'>[T] is not compatible with our biology.</span>")
 		return
 
 	if(HUSK in T.mutations)
-		to_chat(src, "<span class='warning'>This creature's DNA is ruined beyond useability!</span>")
+		to_chat(src, "<span class='warning'>[T] is not compatible with our biology.</span>")
 		return
 
 	if(!G.can_absorb())
-		to_chat(src, "<span class='warning'>We must have a tighter grip to absorb this creature.</span>")
+		to_chat(src, "<span class='warning'>We must have a tighter grip to changed this creature.</span>")
 		return
 
 	if(changeling.isabsorbing)
-		to_chat(src, "<span class='warning'>We are already absorbing!</span>")
+		to_chat(src, "<span class='warning'>We are already changing!</span>")
 		return
 
 	var/obj/item/organ/external/affecting = T.get_organ(src.zone_sel.selecting)
@@ -427,7 +427,7 @@
 
 		feedback_add_details("changeling_powers","A[stage]")
 		if(!do_mob(src, T, 150))
-			to_chat(src, "<span class='warning'>Our absorption of [T] has been interrupted!</span>")
+			to_chat(src, "<span class='warning'>Our changing of [T] has been interrupted!</span>")
 			changeling.isabsorbing = 0
 			return
 

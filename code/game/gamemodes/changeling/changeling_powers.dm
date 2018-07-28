@@ -11,7 +11,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/changelingID = "Changeling"
 	var/geneticdamage = 0
 	var/isabsorbing = 0
-	var/geneticpoints = 25
+	var/geneticpoints = 15
 	var/purchasedpowers = list()
 	var/mimicing = ""
 	var/lingabsorbedcount = 1
@@ -71,13 +71,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 
 	var/mob/living/carbon/Z = src
 	if(istype(Z))
-		var/obj/item/organ/internal/brain/B = Z.internal_organs_by_name[BP_BRAIN]
-		var/obj/item/organ/internal/biostructure/Bio = Z.internal_organs_by_name[BP_CHANG]
-		if(B)
-			B.vital = 0
-		if(!Bio)
-			var/new_organ = /obj/item/organ/internal/biostructure
-			new new_organ(Z)
+		inserting_organ(Z,BP_CHEST)
 
 	if(!powerinstances.len)
 		for(var/P in powers)
@@ -327,13 +321,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 		H.set_species(newSpecies,1)
 		H.b_type = chosen_dna.dna.b_type
 		H.sync_organ_dna()
-		var/obj/item/organ/internal/brain/B = H.internal_organs_by_name[BP_BRAIN]
-		var/obj/item/organ/internal/biostructure/Bio = H.internal_organs_by_name[BP_CHANG]
-		if(B)
-			B.vital = 0
-		if(!Bio)
-			var/new_organ = /obj/item/organ/internal/biostructure
-			new new_organ(H)
+		inserting_organ(H,BP_CHEST)
 
 	domutcheck(src, null)
 	src.UpdateAppearance()
@@ -363,13 +351,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	to_chat(H, "<span class='warning'>Our genes cry out!</span>")
 	H = H.monkeyize()
 	if(istype(H))
-		var/obj/item/organ/internal/brain/B = H.internal_organs_by_name[BP_BRAIN]
-		var/obj/item/organ/internal/biostructure/Bio = H.internal_organs_by_name[BP_CHANG]
-		if(B)
-			B.vital = 0
-		if(!Bio)
-			var/new_organ = /obj/item/organ/internal/biostructure
-			new new_organ(H)
+		inserting_organ(H,BP_CHEST)
 
 	feedback_add_details("changeling_powers","LF")
 	return 1
@@ -835,7 +817,7 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 	to_chat(T, "<span class='danger'>You feel a small prick and your chest becomes tight.</span>")
 	T.make_jittery(400)
 	if(T.reagents)
-		spawn(5)
+		spawn(0.1 MINUTES)
 			T.reagents.add_reagent(/datum/reagent/toxin/cyanide, 3)
 	feedback_add_details("changeling_powers","DTHS")
 	return 1
@@ -1179,7 +1161,8 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 	visible_message("<span class='warning'>The flesh is torn around the [loc.name]\'s arm!</span>",
 		"<span class='warning'>The flesh of our hand is transformed.</span>",
 		"<span class='italics'>You hear organic matter ripping and tearing!</span>")
-	spawn(30)
+	spawn(0.1 MINUTES)
+		playsound(src, 'sound/effects/blobattack.ogg', 30, 1)
 		if(src.mind.changeling.recursive_enhancement)
 			if(changeling_generic_weapon(/obj/item/weapon/melee/changeling/arm_blade/greater))
 				to_chat(src, "<span class='notice'>We prepare an extra sharp blade.</span>")
@@ -1208,3 +1191,19 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 		src.mind.changeling.recursive_enhancement = 1
 	feedback_add_details("changeling_powers","RE")
 	return 1
+
+
+/mob/proc/rapid_heal()
+	set category = "Changeling"
+	set name = "Rapid Regeneration"
+	set desc = "Power of cleric."
+	if(istype(src,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = src
+		var/datum/changeling/changeling = changeling_power(0,0,100,CONSCIOUS)
+		H.mind.changeling.heal = !H.mind.changeling.heal
+		if(!changeling)
+			return
+		if(H.mind.changeling.heal)
+			to_chat(H, "<span class='alium'>We activate our stemocyte pool and begin intensive fleshmending.</span>")
+		if(!H.mind.changeling.heal)
+			to_chat(H, "<span class='alium'>We inactivate our stemocyte pool and stop intensive fleshmending.</span>")

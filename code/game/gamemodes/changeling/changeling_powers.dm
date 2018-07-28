@@ -24,6 +24,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	var/readapts = 1
 	var/max_readapts = 2
 	var/true_dead = FALSE
+	var/damaged = FALSE
 
 /datum/changeling/New()
 	..()

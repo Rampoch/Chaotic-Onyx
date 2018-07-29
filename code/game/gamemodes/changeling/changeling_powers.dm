@@ -1159,7 +1159,7 @@ var/list/datum/absorbed_dna/hivemind_bank = list()
 /mob/proc/changeling_arm_blade()
 	set category = "Changeling"
 	set name = "Arm Blade (20)"
-	if(!H.mind.changeling.cloaked)
+	if(!src.mind.changeling.cloaked)
 		visible_message("<span class='warning'>The flesh is torn around the [src.name]\'s arm!</span>",
 			"<span class='warning'>The flesh of our hand is transformed.</span>",
 			"<span class='italics'>You hear organic matter ripping and tearing!</span>")

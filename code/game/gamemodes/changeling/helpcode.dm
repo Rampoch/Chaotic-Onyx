@@ -108,3 +108,18 @@
 	QDEL_NULL(brainchan)
 	owner.mind.changeling.true_dead = 1
 	..()
+
+
+
+/mob/proc/inserting_organ(var/mob/living/carbon/target, var/obj/item/organ/external/affected)
+	var/obj/item/organ/internal/brain/B = target.internal_organs_by_name[BP_BRAIN]
+	var/obj/item/organ/internal/biostructure/Bio = target.internal_organs_by_name[BP_CHANG]
+	if(B)
+		B.vital = 0
+	if(!Bio)
+		log_debug("[target.name] changelling in spawn for organ", notify_admin = TRUE)
+		var/new_organ = /obj/item/organ/internal/biostructure/
+		new new_organ(target)
+		for(var/obj/item/organ/internal/biostructure/Biol in target.internal_organs)
+			if(istype(Biol, /obj/item/organ/internal/biostructure/))
+				target.internal_organs_by_name[BP_CHANG] = Biol

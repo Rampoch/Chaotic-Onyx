@@ -67,7 +67,11 @@
 
 /datum/design/item/surgery/clot
 	name = "Capillary Laying Operation Tool"
+<<<<<<< HEAD
 	desc = "A canister like tool that stores synthetic vein."
+=======
+	desc = "A canister like tool that has containers on it that stores synthetic vein."
+>>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 	id = "clot"
 	req_tech = list(TECH_MATERIAL = 5, TECH_ENGINEERING = 4, TECH_BIO = 5)
 	materials = list (DEFAULT_WALL_MATERIAL = 10000, "glass" = 8000, "silver" = 1000)

@@ -24,7 +24,7 @@ REAGENT SCANNER
 	origin_tech = list(TECH_MAGNET = 1, TECH_BIO = 1)
 	var/mode = 1;
 
-/obj/item/device/healthanalyzer/do_surgery(mob/living/M, mob/living/user)
+/obj/item/device/healthanalyzer/do_surgery(mob/living/M, mob/living/user, src)
 	if(user.a_intent != I_HELP) //in case it is ever used as a surgery tool
 		return ..()
 	scan_mob(M, user) //default surgery behaviour is just to scan as usual

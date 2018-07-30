@@ -40,7 +40,11 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /mob/living/attackby(obj/item/I, mob/user)
 	if(!ismob(user))
 		return 0
+<<<<<<< HEAD
 	if(can_operate(src, user) && I.do_surgery(src, user)) //Surgery
+=======
+	if(can_operate(src, user) && I.do_surgery(src, user, I)) //Surgery
+>>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 		return 1
 	return I.attack(src, user, user.zone_sel.selecting)
 

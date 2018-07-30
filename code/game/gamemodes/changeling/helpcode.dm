@@ -109,14 +109,12 @@
 	owner.mind.changeling.true_dead = 1
 	..()
 
+/mob/living/carbon/proc/insert_biostructure()
+	var/obj/item/organ/internal/brain/brain = src.internal_organs_by_name[BP_BRAIN]
+	var/obj/item/organ/internal/biostructure/bio = src.internal_organs_by_name[BP_CHANG]
 
-
-/mob/proc/inserting_organ(var/mob/living/carbon/target, var/obj/item/organ/external/affected)
-	var/obj/item/organ/internal/brain/B = target.internal_organs_by_name[BP_BRAIN]
-	var/obj/item/organ/internal/biostructure/Bio = target.internal_organs_by_name[BP_CHANG]
-	if(B)
-		B.vital = 0
-	if(!Bio)
-		log_debug("The Strange biostructure created in [target.name] changeling body.", notify_admin = TRUE)
-		var/obj/item/organ/internal/biostructure/new_organ = new(target)
-		target.internal_organs_by_name[BP_CHANG] = new_organ
+	if (brain)
+		brain.vital = 0
+	if (!bio)
+		log_debug("The changeling biostructure appeares in [src.name].", notify_admin = TRUE)
+		src.internal_organs_by_name[BP_CHANG] = new /obj/item/organ/internal/biostructure(src)

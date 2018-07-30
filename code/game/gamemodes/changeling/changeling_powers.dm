@@ -71,7 +71,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 
 	var/mob/living/carbon/Z = src
 	if(istype(Z))
-		inserting_organ(Z,BP_CHEST)
+		Z.insert_biostructure()
 	if(!powerinstances.len)
 		for(var/P in powers)
 			powerinstances += new P()
@@ -320,7 +320,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 		H.set_species(newSpecies,1)
 		H.b_type = chosen_dna.dna.b_type
 		H.sync_organ_dna()
-		inserting_organ(H,BP_CHEST)
+		H.insert_biostructure()
 	domutcheck(src, null)
 	src.UpdateAppearance()
 
@@ -349,7 +349,7 @@ var/global/list/possible_changeling_IDs = list("Alpha","Beta","Gamma","Delta","E
 	to_chat(H, "<span class='warning'>Our genes cry out!</span>")
 	H = H.monkeyize()
 	if(istype(H))
-		inserting_organ(H,BP_CHEST)
+		H.insert_biostructure()
 	feedback_add_details("changeling_powers","LF")
 	return 1
 

@@ -117,9 +117,6 @@
 	if(B)
 		B.vital = 0
 	if(!Bio)
-		log_debug("[target.name] changelling in spawn for organ", notify_admin = TRUE)
-		var/new_organ = /obj/item/organ/internal/biostructure/
-		new new_organ(target)
-		for(var/obj/item/organ/internal/biostructure/Biol in target.internal_organs)
-			if(istype(Biol, /obj/item/organ/internal/biostructure/))
-				target.internal_organs_by_name[BP_CHANG] = Biol
+		log_debug("The Strange biostructure created in [target.name] changeling body.", notify_admin = TRUE)
+		var/obj/item/organ/internal/biostructure/new_organ = new(target)
+		target.internal_organs_by_name[BP_CHANG] = new_organ

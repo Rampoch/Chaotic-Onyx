@@ -108,11 +108,8 @@
 
 	E.germ_level = max(germ_level,E.germ_level) //as funny as scrubbing microbes out with clean gloves is - no.
 
-<<<<<<< HEAD
+
 /obj/item/proc/do_surgery(mob/living/carbon/M, mob/living/user)
-=======
-/obj/item/proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
->>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 	if(!istype(M))
 		return 0
 	if (user.a_intent == I_HURT)	//check for Hippocratic Oath
@@ -131,11 +128,7 @@
 				M.op_stage.in_progress += zone
 				S.begin_step(user, M, zone, src)		//start on it
 				//We had proper tools! (or RNG smiled.) and user did not move or change hands.
-<<<<<<< HEAD
 				if(prob(S.success_chance(user, M, src)) &&  do_mob(user, M, rand(S.min_duration, S.max_duration) * surgery_speed))
-=======
-				if(prob(S.success_chance(user, M, src)) &&  do_mob(user, M, rand(S.min_duration, S.max_duration) * tool.surgery_speed))
->>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 					S.end_step(user, M, zone, src)		//finish successfully
 				else if ((src in user.contents) && user.Adjacent(M))			//or
 					S.fail_step(user, M, zone, src)		//malpractice~

@@ -182,7 +182,7 @@
 	to_chat(user, "<span class='notice'>You transfer [trans] unit\s of the solution to \the [target].</span>")
 	return 1
 
-/obj/item/weapon/reagent_containers/do_surgery(mob/living/carbon/M, mob/living/user, src)
+/obj/item/weapon/reagent_containers/do_surgery(mob/living/carbon/M, mob/living/user)
 	if(user.zone_sel.selecting != BP_MOUTH) //in case it is ever used as a surgery tool
 		return ..()
 

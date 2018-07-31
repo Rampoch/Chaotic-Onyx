@@ -21,7 +21,7 @@
 //	reagents.add_reagent(/datum/reagent/tricordrazine, 30)
 //	return
 
-/obj/item/weapon/reagent_containers/hypospray/do_surgery(mob/living/carbon/M, mob/living/user, src)
+/obj/item/weapon/reagent_containers/hypospray/do_surgery(mob/living/carbon/M, mob/living/user)
 	if(user.a_intent != I_HELP) //in case it is ever used as a surgery tool
 		return ..()
 	attack(M, user)

@@ -108,11 +108,8 @@
 
 	E.germ_level = max(germ_level,E.germ_level) //as funny as scrubbing microbes out with clean gloves is - no.
 
-<<<<<<< HEAD
+
 /obj/item/proc/do_surgery(mob/living/carbon/M, mob/living/user)
-=======
-/obj/item/proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
->>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 	if(!istype(M))
 		return 0
 	if (user.a_intent == I_HURT)	//check for Hippocratic Oath

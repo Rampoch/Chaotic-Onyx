@@ -46,7 +46,7 @@
 	if (AM.move_speed < 12)	sense()
 	return
 
-
+	
 /obj/item/device/assembly/prox_sensor/sense()
 	var/turf/mainloc = get_turf(src)
 //		if(scanning && cooldown <= 0)

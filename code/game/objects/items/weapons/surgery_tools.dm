@@ -174,11 +174,7 @@
 
 /obj/item/weapon/FixOVein/clot
 	name = "capillary laying operation tool" //C.L.O.T.
-<<<<<<< HEAD
 	desc = "A canister like tool that stores synthetic vein."
-=======
-	desc = "A canister like tool that has containers on it that stores synthetic vein."
->>>>>>> 82c29b1188c4730f5510c606595b4c182c0eb4b3
 	icon_state = "clot"
 	surgery_speed = 0.5
 

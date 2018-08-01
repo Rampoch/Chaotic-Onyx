@@ -8,15 +8,16 @@
 	var/mob/living/carbon/breather
 	var/obj/item/clothing/mask/breath/contained
 
-	var/spawn_type = /obj/item/weapon/tank/oxygen
+	var/spawn_type = null
 	var/mask_type = /obj/item/clothing/mask/breath/anesthetic
 
-	var/is_loosen = FALSE
+	var/is_loosen = TRUE
 	var/valve_opened = FALSE
 
 /obj/structure/gas_stand/New()
 	..()
-	tank = new spawn_type (src)
+	if (spawn_type)
+		tank = new spawn_type (src)
 	contained = new mask_type (src)
 	update_icon()
 
@@ -33,8 +34,14 @@
 			overlays += "tank_anest"
 		else if(istype(tank,/obj/item/weapon/tank/nitrogen))
 			overlays += "tank_nitro"
-		else
+		else if(istype(tank,/obj/item/weapon/tank/oxygen))
 			overlays += "tank_oxyg"
+		else if(istype(tank,/obj/item/weapon/tank/phoron))
+			overlays += "tank_phoron"
+		else if(istype(tank,/obj/item/weapon/tank/hydrogen))
+			overlays += "tank_hydro"
+		else
+			overlays += "tank_other"
 
 /obj/structure/gas_stand/Destroy()
 	STOP_PROCESSING(SSobj,src)
@@ -95,6 +102,7 @@
 				if(breather.internals)
 					breather.internals.icon_state = "internal1"
 			valve_opened = TRUE	
+			playsound(get_turf(src), 'sound/effects/internals.ogg', 100, 1)
 			update_icon()
 			START_PROCESSING(SSobj,src)
 
@@ -174,6 +182,8 @@
 /obj/structure/gas_stand/examine(var/mob/user)
 	. = ..()
 	if(tank)
+		if (!is_loosen)
+			to_chat(user, "\The [tank] connected to it.")
 		to_chat(user, "The meter shows [round(tank.air_contents.return_pressure())]. The valve is [valve_opened == TRUE ? "open" : "closed"].")
 		if (tank.distribute_pressure == 0)
 			to_chat(user, "Use wrench to replace tank.")
@@ -219,4 +229,5 @@
 	desc = "Anaesthetic machine used to support the administration of anaesthesia ."
 	spawn_type = /obj/item/weapon/tank/anesthetic
 	mask_type = /obj/item/clothing/mask/breath/anesthetic
+	is_loosen = FALSE
 

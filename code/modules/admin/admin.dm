@@ -485,7 +485,7 @@ var/global/floorIsLava = 0
 		if(11)
 			dat+={"
 				<B>[GLOB.using_map.company_name] D-Notice Handler</B><HR>
-				<FONT SIZE=1>A D-Notice is to be bestowed upon the channel if the handling Authority deems it as harmful for the [station_name()]'s
+				<FONT SIZE=1>A D-Notice is to be bestowed upon the channel if the handling Authority deems it as harmful for the [station_name()]s
 				morale, integrity or disciplinary behaviour. A D-Notice will render a channel unable to be updated by anyone, without deleting any feed
 				stories it might contain at the time. You can lift a D-Notice if you have the required access at any time.</FONT><HR>
 			"}
@@ -1072,6 +1072,28 @@ var/global/floorIsLava = 0
 		return
 	new /obj/effect/vine(get_turf(usr), plant_controller.seeds[seedtype])
 	log_admin("[key_name(usr)] spawned [seedtype] vines at ([usr.x],[usr.y],[usr.z])")
+
+/datum/admins/proc/spawn_debug_template()
+	set category = "Debug"
+	set name = "#Spawn Debug Template"
+
+	if(!check_rights(R_ADMIN|R_MOD|R_DEBUG|R_SPAWN))
+		return
+	
+	//jump to loc
+	var/x = 156
+	var/y = 84
+	var/z = 2
+	var/turf/T = locate(x, y, z)
+	if(!T)
+		return
+	if (!usr)
+		return
+	usr.forceMove(T)
+
+	//spawn items
+	new /obj/item/weapon/reagent_containers/syringe(locate(x+1, y, z))
+	
 
 /datum/admins/proc/spawn_atom(var/object as text)
 	set category = "Debug"

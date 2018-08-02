@@ -109,7 +109,6 @@
 		if(foodsupply)
 			if(dish.growth + 3 >= 100 && dish.growth < 100)
 				ping("\The [src] pings, \"Sufficient viral growth density achieved.\"")
-				dish.update_icon()
 
 			foodsupply -= 1
 			dish.growth += 3

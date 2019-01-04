@@ -97,8 +97,8 @@ var/list/global/base_miss_chance = list(
 	BP_R_ARM = 30,
 	BP_L_HAND = 50,
 	BP_R_HAND = 50,
-	BP_L_FOOT = 60,
-	BP_R_FOOT = 60,
+	BP_L_FOOT = 90,
+	BP_R_FOOT = 90,
 )
 
 //Used to weight organs when an organ is hit randomly (i.e. not a directed, aimed attack).
